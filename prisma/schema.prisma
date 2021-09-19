@@ -1,0 +1,118 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Schema Client Generator
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Schema Generator DBML
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+model user {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(50)
+  email String @unique @db.VarChar(50)
+  password String? @unique
+  image String? @db.VarChar(200)
+  phone String? @db.Char(15)
+  store String? @db.VarChar(50)
+  balance Int? @default(0)
+  role Role @default(CUSTOMER)
+  status Status @default(ACTIVE)
+  created_at DateTime @default(now())
+  updated_at DateTime? @updatedAt
+
+  products product[] @relation("SellerHasManyProduct")
+  customers transaction[] @relation("CustomerHasManyTransaction")
+
+  @@index([id])
+}
+
+model banner {
+  id Int @id @default(autoincrement())
+  name String? @db.VarChar(50)
+  description String? @db.Text
+  uri String? @db.VarChar(200)
+  image String? @db.VarChar(200)
+  status Status @default(ACTIVE)
+  created_at DateTime @default(now())
+  updated_at DateTime? @updatedAt
+
+  @@index([id])
+}
+
+model category {
+  id Int @id @default(autoincrement())
+  name String? @db.VarChar(100)
+  description String? @db.Text
+  status Status @default(ACTIVE)
+  created_at DateTime @default(now())
+  updated_at DateTime? @updatedAt
+
+  products product[] @relation("CategoryHasManyProduct")
+
+  @@index([id])
+}
+
+model product {
+  id Int @id @default(autoincrement())
+  name String? @db.VarChar(150)
+  description String? @db.Text
+  image String? @db.VarChar(200)
+  preview Json?
+  price Float? @default(0)
+  discount Float? @default(0)
+  seller_id Int?
+  category_id Int?
+  status Status @default(ACTIVE)
+  created_at DateTime @default(now())
+  updated_at DateTime? @updatedAt
+
+  seller user? @relation("SellerHasManyProduct", fields: [seller_id], references: [id])
+  category category? @relation("CategoryHasManyProduct", fields: [category_id], references: [id])
+  transactions transaction[] @relation("ProductHasManyTransaction")
+
+  @@index([id, seller_id, category_id])
+}
+
+model transaction {
+  id Int @id @default(autoincrement())
+  customer_id Int?
+  product_id Int?
+  price Float?
+  quantity Int?
+  detail String?
+  status Transaction @default(PENDING)
+  created_at DateTime @default(now())
+  updated_at DateTime? @updatedAt
+
+  customer user? @relation("CustomerHasManyTransaction", fields: [customer_id], references: [id])
+  product product? @relation("ProductHasManyTransaction", fields: [product_id], references: [id])
+
+  @@index([id, customer_id, product_id])
+}
+
+enum Role {
+  CUSTOMER
+  SELLER
+  ADMIN
+}
+
+enum Status {
+  ACTIVE
+  DEACTIVE
+}
+
+enum Transaction {
+  PENDING
+  PACKED
+  SENT
+  DELIVERED
+}
