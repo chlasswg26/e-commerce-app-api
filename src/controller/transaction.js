@@ -241,6 +241,14 @@ module.exports = {
     const main = async () => {
       try {
         const parameter = request.params
+        const cache = request.data
+
+        if (cache?.role !== 'ADMIN' && cache?.id !== parameter.id) {
+          return helper.response(response, 400, {
+            message: 'ID\'s not match'
+          })
+        }
+
         const getTransactionById = await prisma.transaction.findUnique({
           where: {
             id: parameter.id
@@ -283,6 +291,21 @@ module.exports = {
       try {
         const data = request.body
         const cache = request.data
+        const checkProduct = await prisma.product.findFirst({
+          where: {
+            id: data.product_id
+          },
+          select: {
+            seller_id: true
+          }
+        })
+
+        if (cache?.id === checkProduct.seller_id) {
+          return helper.response(response, 400, {
+            message: 'You can\'t buy your product by your self'
+          })
+        }
+
         const postTransaction = await prisma.transaction.create({
           data: {
             ...data,

@@ -12,7 +12,7 @@ const { verifyToken } = require('../middleware/jwt')
 const { cacheAuth } = require('../middleware/redis')
 const { multerHandler } = require('../middleware/multer')
 const validate = require('../middleware/validation')
-const { admin } = require('../middleware/authorization')
+const { admin, customer } = require('../middleware/authorization')
 
 Route
   .get('/', validate([
@@ -22,7 +22,7 @@ Route
   ]), cacheAuth, verifyToken, admin, getUser)
   .get('/:id', validate([
     param('id').escape().trim().notEmpty().withMessage('User ID can\'t be empty').bail().isNumeric().withMessage('User ID must be numeric').bail().toInt()
-  ]), cacheAuth, verifyToken, admin, getUserById)
+  ]), cacheAuth, verifyToken, customer, getUserById)
   .post('/', multerHandler, validate([
     check('name').escape().trim().notEmpty().withMessage('User name can\'t be empty'),
     check('email').escape().trim().notEmpty().withMessage('E-mail address can\'t be empty').bail().isEmail().withMessage('E-mail bad format'),

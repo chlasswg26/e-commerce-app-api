@@ -1,5 +1,6 @@
 # Welcome to E-Commerce RESTful APIs 👋
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![Documentation](https://img.shields.io/badge/documentation-yes-brightgreen.svg)](https://documenter.getpostman.com/view/11433882/UUxtDpyx)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://choosealicense.com/licenses/mit/)
 
@@ -18,7 +19,7 @@
 - AUTHORIZATION
 - JWT TOKEN
 - FILE UPLOAD
-- SANITIZOR
+- SANITIZER
 - VALIDATOR
 - CACHE
 - MORE
