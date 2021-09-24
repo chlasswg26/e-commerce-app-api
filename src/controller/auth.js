@@ -249,7 +249,7 @@ module.exports = {
 
             checkUser.token = encryptionToken
 
-            await redisHelper.setCacheAuth(
+            await redisHelper.setCache(
               redisKey,
               cached,
               JWT_TOKEN_LIFE,
@@ -325,7 +325,7 @@ module.exports = {
         refreshToken: isRemember === 'ON' ? refreshToken : false
       }
 
-      await redisHelper.setCacheAuth(
+      await redisHelper.setCache(
         `auth:${data?.result?.email}`,
         cached,
         JWT_REFRESH_TOKEN_LIFE,

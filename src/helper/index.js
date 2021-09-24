@@ -12,7 +12,7 @@ const {
 } = process.env
 
 module.exports = {
-  join: (object) => {
+  parse: (object) => {
     return Object.keys(object)
       .map(key => key + object[key])
       .join('')

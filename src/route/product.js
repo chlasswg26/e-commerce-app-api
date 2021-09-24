@@ -9,7 +9,7 @@ const {
   deleteProduct
 } = require('../controller/product')
 const { verifyToken } = require('../middleware/jwt')
-const { cacheAuth } = require('../middleware/redis')
+const { cacheAuth, cacheProduct } = require('../middleware/redis')
 const { multerHandler } = require('../middleware/multer')
 const validate = require('../middleware/validation')
 const { seller } = require('../middleware/authorization')
@@ -19,7 +19,7 @@ Route
     query('search').escape().trim(),
     query('limit').escape().trim().toInt(),
     query('page').escape().trim().toInt()
-  ]), getProduct)
+  ]), cacheProduct, getProduct)
   .get('/:id', validate([
     param('id').escape().trim().notEmpty().withMessage('Product ID can\'t be empty').bail().isNumeric().withMessage('Product ID must be numeric').bail().toInt()
   ]), getProductById)

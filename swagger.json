@@ -19,7 +19,7 @@
             "description": "DEVELOPMENT ENDPOINT"
         },
         {
-            "url": "https://chemical-condition-production.up.railway.app/api/v1",
+            "url": "https://blanja-api.up.railway.app/api/v1",
             "description": "PRODUCTION ENDPOINT"
         }
     ],

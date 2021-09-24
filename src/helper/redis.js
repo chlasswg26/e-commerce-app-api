@@ -7,7 +7,7 @@ const { NODE_ENV } = process.env
 const Duration = require('duration-js')
 
 module.exports = {
-  setCacheAuth: async (
+  setCache: async (
     key,
     cached,
     tokenLife,

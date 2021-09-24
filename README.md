@@ -8,7 +8,7 @@
 
 ### 🏠 [Homepage](https://github.com/chlasswg26/e-commerce-app-api#readme)
 
-### ✨ [Demo](https://chemical-condition-production.up.railway.app)
+### ✨ [Demo](https://blanja-api.up.railway.app/v1/documentation)
 
 
 ## Features

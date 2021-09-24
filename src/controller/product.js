@@ -1,5 +1,6 @@
 const prisma = require('../config/prisma')
 const helper = require('../helper')
+const redisHelper = require('../helper/redis')
 const fs = require('fs')
 require('dotenv').config()
 const { NODE_ENV } = process.env
@@ -107,6 +108,26 @@ module.exports = {
             previous: (parseInt(filter.page || 1) - 1) <= 0 ? false : parseInt(filter.page || 1) - 1
           }
         }
+
+        const {
+          redisKey,
+          cached,
+          tokenLife
+        } = {
+          redisKey: `product:${helper.parse(request.query)}`,
+          cached: {
+            data: getAllProduct,
+            pagination: pagination
+          },
+          tokenLife: '1m'
+        }
+
+        await redisHelper.setCache(
+          redisKey,
+          cached,
+          tokenLife,
+          response
+        )
 
         return helper.response(response, 200, getAllProduct, pagination)
       } catch (error) {
