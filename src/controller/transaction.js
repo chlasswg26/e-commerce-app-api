@@ -58,68 +58,80 @@ module.exports = {
     const main = async () => {
       try {
         const filter = request.query
-        const getAllTransaction = await prisma.transaction.findMany({
-          where: {
-            OR: [
-              {
-                customer: {
+        const cache = request.data
+        let where = {
+          OR: [
+            {
+              customer: {
+                name: {
+                  contains: filter.search
+                }
+              }
+            },
+            {
+              product: {
+                name: {
+                  contains: filter.search
+                }
+              }
+            },
+            {
+              product: {
+                description: {
+                  contains: filter.search
+                }
+              }
+            },
+            {
+              product: {
+                seller: {
                   name: {
                     contains: filter.search
                   }
                 }
-              },
-              {
-                product: {
+              }
+            },
+            {
+              product: {
+                seller: {
+                  store: {
+                    contains: filter.search
+                  }
+                }
+              }
+            },
+            {
+              product: {
+                category: {
                   name: {
                     contains: filter.search
                   }
                 }
-              },
-              {
-                product: {
+              }
+            },
+            {
+              product: {
+                category: {
                   description: {
                     contains: filter.search
                   }
                 }
-              },
-              {
-                product: {
-                  seller: {
-                    name: {
-                      contains: filter.search
-                    }
-                  }
-                }
-              },
-              {
-                product: {
-                  seller: {
-                    store: {
-                      contains: filter.search
-                    }
-                  }
-                }
-              },
-              {
-                product: {
-                  category: {
-                    name: {
-                      contains: filter.search
-                    }
-                  }
-                }
-              },
-              {
-                product: {
-                  category: {
-                    description: {
-                      contains: filter.search
-                    }
-                  }
-                }
               }
-            ]
-          },
+            }
+          ]
+        }
+
+        if (cache?.role !== 'ADMIN') {
+          where = {
+            ...where,
+            AND: {
+              customer_id: cache?.id
+            }
+          }
+        }
+
+        const getAllTransaction = await prisma.transaction.findMany({
+          where,
           orderBy: filter.orderBy || {
             id: 'asc'
           },
@@ -142,67 +154,7 @@ module.exports = {
         })
 
         const totalTransaction = await prisma.transaction.count({
-          where: {
-            OR: [
-              {
-                customer: {
-                  name: {
-                    contains: filter.search
-                  }
-                }
-              },
-              {
-                product: {
-                  name: {
-                    contains: filter.search
-                  }
-                }
-              },
-              {
-                product: {
-                  description: {
-                    contains: filter.search
-                  }
-                }
-              },
-              {
-                product: {
-                  seller: {
-                    name: {
-                      contains: filter.search
-                    }
-                  }
-                }
-              },
-              {
-                product: {
-                  seller: {
-                    store: {
-                      contains: filter.search
-                    }
-                  }
-                }
-              },
-              {
-                product: {
-                  category: {
-                    name: {
-                      contains: filter.search
-                    }
-                  }
-                }
-              },
-              {
-                product: {
-                  category: {
-                    description: {
-                      contains: filter.search
-                    }
-                  }
-                }
-              }
-            ]
-          },
+          where,
           orderBy: filter.orderBy || {
             id: 'asc'
           },
