@@ -175,15 +175,15 @@ module.exports = {
           }
         })
 
-        if (!checkUser.email) {
+        if (!checkUser?.email) {
           return helper.response(response, 400, {
             message: 'Unregistered account'
           })
         }
 
-        const comparePassword = bcrypt.compareSync(data.password, checkUser.password)
+        const comparePassword = bcrypt.compareSync(data.password, checkUser?.password)
 
-        delete checkUser.password
+        delete checkUser?.password
 
         if (!comparePassword) {
           return helper.response(response, 400, {
@@ -191,7 +191,7 @@ module.exports = {
           })
         }
 
-        if (checkUser.verify === 'ACTIVE') {
+        if (checkUser?.status === 'ACTIVE') {
           return helper.response(response, 400, {
             message: 'Unverified account'
           })
@@ -199,7 +199,7 @@ module.exports = {
 
         const get = promisify(redisClient.get).bind(redisClient)
 
-        get(`auth:${checkUser.email}`)
+        get(`auth:${checkUser?.email}`)
           .then(async (result) => {
             const cache = JSON.parse(result)
 
@@ -209,7 +209,7 @@ module.exports = {
               })
             }
 
-            checkUser.image = `${request.protocol}://${request.get('host')}/storage/images/${checkUser.image}`
+            checkUser.image = `${request.protocol}://${request.get('host')}/storage/images/${checkUser?.image}`
 
             let jwtOption = {}
             const isRemember = data.remember
@@ -230,12 +230,12 @@ module.exports = {
 
             const accessToken = jwt.sign({
               result: {
-                email: checkUser.email
+                email: checkUser?.email
               }
             }, JWT_SECRET_KEY, jwtOption)
             const refreshToken = jwt.sign({
               result: {
-                email: checkUser.email
+                email: checkUser?.email
               }
             }, JWT_REFRESH_SECRET_KEY, jwtOption)
             const cached = {
@@ -244,8 +244,8 @@ module.exports = {
               accessToken,
               refreshToken: isRemember === 'ON' ? refreshToken : false
             }
-            const encryptionToken = encryptString(checkUser.email, ENCRYPTION_PASSWORD)
-            const redisKey = `auth:${checkUser.email}`
+            const encryptionToken = encryptString(checkUser?.email, ENCRYPTION_PASSWORD)
+            const redisKey = `auth:${checkUser?.email}`
 
             checkUser.token = encryptionToken
 

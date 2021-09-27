@@ -295,8 +295,8 @@ module.exports = {
         }
 
         if (file.length) {
-          if (fs.existsSync(`./public/images/${checkUser.image}`)) {
-            fs.unlinkSync(`./public/images/${checkUser.image}`)
+          if (fs.existsSync(`./public/images/${checkUser?.image}`)) {
+            fs.unlinkSync(`./public/images/${checkUser?.image}`)
           }
 
           data.image = file[0]?.filename
@@ -357,9 +357,9 @@ module.exports = {
           }
         })
 
-        if (checkUser.image) {
-          if (fs.existsSync(`./public/images/${checkUser.image}`)) {
-            fs.unlinkSync(`./public/images/${checkUser.image}`)
+        if (checkUser?.image) {
+          if (fs.existsSync(`./public/images/${checkUser?.image}`)) {
+            fs.unlinkSync(`./public/images/${checkUser?.image}`)
           }
         }
 

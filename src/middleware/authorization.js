@@ -20,7 +20,7 @@ module.exports = {
         const file = request.files?.image || {}
         const preview = request.files?.preview || {}
 
-        switch (checkUser.role) {
+        switch (checkUser?.role) {
           case 'ADMIN':
             next()
             break
@@ -102,7 +102,7 @@ module.exports = {
         const file = request.files?.image || {}
         const preview = request.files?.preview || {}
 
-        switch (checkUser.role) {
+        switch (checkUser?.role) {
           case 'ADMIN':
             next()
             break
@@ -187,7 +187,7 @@ module.exports = {
         const file = request.files?.image || {}
         const preview = request.files?.preview || {}
 
-        switch (checkUser.role) {
+        switch (checkUser?.role) {
           case 'ADMIN':
             next()
             break
