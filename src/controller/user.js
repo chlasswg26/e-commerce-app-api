@@ -128,9 +128,10 @@ module.exports = {
     const main = async () => {
       try {
         const parameter = request.params
+        const cache = request.data
         const getUserById = await prisma.user.findUnique({
           where: {
-            id: parameter.id
+            id: cache.role === 'ADMIN' ? parameter.id : cache.id
           },
           select
         })
