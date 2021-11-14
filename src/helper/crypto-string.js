@@ -29,7 +29,8 @@ module.exports = {
       iterations: iterationsNum,
       digest: ENCRYPTION_DIGEST
     })
+    const decryptionSignedCookie = decryptString(data, ENCRYPTION_PASSWORD)
 
-    return JSON.parse(decryptString(data, ENCRYPTION_PASSWORD))
+    return typeof decryptionSignedCookie === 'undefined' ? {} : JSON.parse(decryptionSignedCookie)
   }
 }

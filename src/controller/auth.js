@@ -13,6 +13,7 @@ const {
   NODE_ENV
 } = process.env
 const prisma = require('../config/prisma')
+const { encrypt, decrypt } = require('../helper/crypto-string')
 const select = {
   id: true,
   name: true,
@@ -172,6 +173,11 @@ module.exports = {
 
         const comparePassword = bcrypt.compareSync(data.password, checkUser?.password)
         const getSignedCookie = request.signedCookies?.jwt
+        let getCookieContent = {}
+
+        if (getSignedCookie) {
+          getCookieContent = decrypt(13, getSignedCookie || {}, response)
+        }
 
         delete checkUser?.password
 
@@ -186,8 +192,6 @@ module.exports = {
             message: 'Unverified account'
           })
         }
-
-        const getCookieContent = typeof getSignedCookie === 'undefined' ? {} : JSON.parse(getSignedCookie)
 
         if (checkUser.refresh_token === getCookieContent?.token?.refreshToken) {
           return helper.response(response, 400, {
@@ -224,6 +228,7 @@ module.exports = {
             refreshToken: refreshToken
           }
         }
+        const encryptedCookieContent = encrypt(13, cookieContent, response)
         const maxAgeCookie = new Duration(JWT_REFRESH_TOKEN_LIFE)
         const updateRefreshToken = await prisma.user.update({
           where: {
@@ -241,7 +246,7 @@ module.exports = {
           })
         }
 
-        response.cookie('jwt', JSON.stringify(cookieContent), {
+        response.cookie('jwt', encryptedCookieContent, {
           maxAge: maxAgeCookie,
           expires: maxAgeCookie + Date.now(),
           httpOnly: true,
@@ -327,6 +332,7 @@ module.exports = {
             refreshToken: refreshToken
           }
         }
+        const encryptedCookieContent = encrypt(13, cookieContent, response)
         const maxAgeCookie = new Duration(JWT_REFRESH_TOKEN_LIFE)
         const updateRefreshToken = await prisma.user.update({
           where: {
@@ -344,7 +350,7 @@ module.exports = {
           })
         }
 
-        response.cookie('jwt', JSON.stringify(cookieContent), {
+        response.cookie('jwt', encryptedCookieContent, {
           maxAge: maxAgeCookie,
           expires: maxAgeCookie + Date.now(),
           httpOnly: true,

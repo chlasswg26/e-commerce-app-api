@@ -7768,7 +7768,7 @@
                     "User"
                 ],
                 "summary": "GET USER",
-                "description": "Get all data of user including optionality Query (you can see on top of this documentation)\n\n##### **OPTIONAL**\n\n| Query | Value | Description |\n| :---: | :---: | :---------: |\n|   session   | ADMIN | Gain admin access to get all user data |",
+                "description": "Get all data of user including optionality Query (you can see on top of this documentation)",
                 "responses": {
                     "200": {
                         "description": "OK",

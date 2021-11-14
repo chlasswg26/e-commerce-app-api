@@ -8,6 +8,7 @@ const {
   JWT_ALGORITHM
 } = process.env
 const helper = require('../helper')
+const { decrypt } = require('../helper/crypto-string')
 const select = {
   id: true,
   name: true,
@@ -95,7 +96,7 @@ module.exports = {
         })
       }
 
-      const getCookieContent = JSON.parse(getSignedCookie)
+      const getCookieContent = decrypt(13, getSignedCookie, response)
       const verifyOptions = {
         algorithms: JWT_ALGORITHM
       }
@@ -149,7 +150,7 @@ module.exports = {
         })
       }
 
-      const getCookieContent = JSON.parse(getSignedCookie)
+      const getCookieContent = decrypt(13, getSignedCookie, response)
       const verifyOptions = {
         algorithms: JWT_ALGORITHM
       }
