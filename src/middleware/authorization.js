@@ -1,4 +1,3 @@
-const fs = require('fs')
 const helper = require('../helper')
 const prisma = require('../config/prisma')
 require('dotenv').config()
@@ -8,7 +7,7 @@ module.exports = {
   admin: (request, response, next) => {
     const main = async () => {
       try {
-        const data = request.data || request.author
+        const data = request.data.user
         const checkUser = await prisma.user.findFirst({
           where: {
             email: data.email
@@ -17,8 +16,6 @@ module.exports = {
             role: true
           }
         })
-        const file = request.files?.image || {}
-        const preview = request.files?.preview || {}
 
         switch (checkUser?.role) {
           case 'ADMIN':
@@ -26,53 +23,14 @@ module.exports = {
             break
 
           default:
-            if (file.length) {
-              if (fs.existsSync(`./public/images/${file[0]?.filename}`)) {
-                fs.unlinkSync(`./public/images/${file[0]?.filename}`)
-              }
-            }
-
-            if (preview.length) {
-              const files = preview.map(image => {
-                return {
-                  image: image.filename
-                }
-              })
-
-              files.forEach((file) => {
-                if (fs.existsSync(`./public/images/${file.image}`)) {
-                  fs.unlinkSync(`./public/images/${file.image}`)
-                }
-              })
-            }
+            helper.imageRemover(request)
 
             return helper.response(response, 400, {
               message: 'Access denied, only admin can access this path'
             })
         }
       } catch (error) {
-        const file = request.files?.image || {}
-        const preview = request.files?.preview || {}
-
-        if (file.length) {
-          if (fs.existsSync(`./public/images/${file[0]?.filename}`)) {
-            fs.unlinkSync(`./public/images/${file[0]?.filename}`)
-          }
-        }
-
-        if (preview.length) {
-          const files = preview.map(image => {
-            return {
-              image: image.filename
-            }
-          })
-
-          files.forEach((file) => {
-            if (fs.existsSync(`./public/images/${file.image}`)) {
-              fs.unlinkSync(`./public/images/${file.image}`)
-            }
-          })
-        }
+        helper.imageRemover(request)
 
         return helper.response(response, 500, {
           message: error.message || error
@@ -90,7 +48,7 @@ module.exports = {
   seller: (request, response, next) => {
     const main = async () => {
       try {
-        const data = request.data
+        const data = request.data.user
         const checkUser = await prisma.user.findFirst({
           where: {
             email: data.email
@@ -99,8 +57,6 @@ module.exports = {
             role: true
           }
         })
-        const file = request.files?.image || {}
-        const preview = request.files?.preview || {}
 
         switch (checkUser?.role) {
           case 'ADMIN':
@@ -111,53 +67,14 @@ module.exports = {
             break
 
           default:
-            if (file.length) {
-              if (fs.existsSync(`./public/images/${file[0]?.filename}`)) {
-                fs.unlinkSync(`./public/images/${file[0]?.filename}`)
-              }
-            }
-
-            if (preview.length) {
-              const files = preview.map(image => {
-                return {
-                  image: image.filename
-                }
-              })
-
-              files.forEach((file) => {
-                if (fs.existsSync(`./public/images/${file.image}`)) {
-                  fs.unlinkSync(`./public/images/${file.image}`)
-                }
-              })
-            }
+            helper.imageRemover(request)
 
             return helper.response(response, 400, {
               message: 'Access denied, only admin & seller can access this path'
             })
         }
       } catch (error) {
-        const file = request.files?.image || {}
-        const preview = request.files?.preview || {}
-
-        if (file.length) {
-          if (fs.existsSync(`./public/images/${file[0]?.filename}`)) {
-            fs.unlinkSync(`./public/images/${file[0]?.filename}`)
-          }
-        }
-
-        if (preview.length) {
-          const files = preview.map(image => {
-            return {
-              image: image.filename
-            }
-          })
-
-          files.forEach((file) => {
-            if (fs.existsSync(`./public/images/${file.image}`)) {
-              fs.unlinkSync(`./public/images/${file.image}`)
-            }
-          })
-        }
+        helper.imageRemover(request)
 
         return helper.response(response, 500, {
           message: error.message || error
@@ -175,7 +92,7 @@ module.exports = {
   customer: (request, response, next) => {
     const main = async () => {
       try {
-        const data = request.data
+        const data = request.data.user
         const checkUser = await prisma.user.findFirst({
           where: {
             email: data.email
@@ -184,8 +101,6 @@ module.exports = {
             role: true
           }
         })
-        const file = request.files?.image || {}
-        const preview = request.files?.preview || {}
 
         switch (checkUser?.role) {
           case 'ADMIN':
@@ -199,53 +114,14 @@ module.exports = {
             break
 
           default:
-            if (file.length) {
-              if (fs.existsSync(`./public/images/${file[0]?.filename}`)) {
-                fs.unlinkSync(`./public/images/${file[0]?.filename}`)
-              }
-            }
-
-            if (preview.length) {
-              const files = preview.map(image => {
-                return {
-                  image: image.filename
-                }
-              })
-
-              files.forEach((file) => {
-                if (fs.existsSync(`./public/images/${file.image}`)) {
-                  fs.unlinkSync(`./public/images/${file.image}`)
-                }
-              })
-            }
+            helper.imageRemover(request)
 
             return helper.response(response, 400, {
               message: 'Access denied, registered user can access this path'
             })
         }
       } catch (error) {
-        const file = request.files?.image || {}
-        const preview = request.files?.preview || {}
-
-        if (file.length) {
-          if (fs.existsSync(`./public/images/${file[0]?.filename}`)) {
-            fs.unlinkSync(`./public/images/${file[0]?.filename}`)
-          }
-        }
-
-        if (preview.length) {
-          const files = preview.map(image => {
-            return {
-              image: image.filename
-            }
-          })
-
-          files.forEach((file) => {
-            if (fs.existsSync(`./public/images/${file.image}`)) {
-              fs.unlinkSync(`./public/images/${file.image}`)
-            }
-          })
-        }
+        helper.imageRemover(request)
 
         return helper.response(response, 500, {
           message: error.message || error

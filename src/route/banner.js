@@ -9,7 +9,6 @@ const {
   deleteBanner
 } = require('../controller/banner')
 const { verifyToken } = require('../middleware/jwt')
-const { cacheAuth } = require('../middleware/redis')
 const { multerHandler } = require('../middleware/multer')
 const validate = require('../middleware/validation')
 const { admin } = require('../middleware/authorization')
@@ -27,24 +26,24 @@ Route
     check('name').escape().trim().notEmpty().withMessage('Banner name can\'t be empty'),
     check('description').escape().trim(),
     check('uri').escape().trim()
-  ]), cacheAuth, verifyToken, admin, postBanner)
+  ]), verifyToken, admin, postBanner)
   .put('/:value', multerHandler, validate([
     param('value').escape().trim().notEmpty().withMessage('Banner parameter value can\'t be empty').bail().isNumeric().withMessage('Banner parameter value must be numeric').bail().toInt(),
     check('name').escape().trim().notEmpty().withMessage('Banner name can\'t be empty'),
     check('description').escape().trim(),
     check('uri').escape().trim()
-  ]), cacheAuth, verifyToken, admin, putBanner)
+  ]), verifyToken, admin, putBanner)
   .put('/:type/:value', multerHandler, validate([
     param('value').escape().trim().notEmpty().withMessage('Banner parameter value can\'t be empty'),
     check('name').escape().trim().notEmpty().withMessage('Banner name can\'t be empty'),
     check('description').escape().trim(),
     check('uri').escape().trim()
-  ]), cacheAuth, verifyToken, admin, putBanner)
+  ]), verifyToken, admin, putBanner)
   .delete('/:value', validate([
     param('value').escape().trim().notEmpty().withMessage('Banner parameter value can\'t be empty').bail().isNumeric().withMessage('Banner parameter value must be numeric').bail().toInt()
-  ]), cacheAuth, verifyToken, admin, deleteBanner)
+  ]), verifyToken, admin, deleteBanner)
   .delete('/:type/:value', validate([
     param('value').escape().trim().notEmpty().withMessage('Banner parameter value can\'t be empty')
-  ]), cacheAuth, verifyToken, admin, deleteBanner)
+  ]), verifyToken, admin, deleteBanner)
 
 module.exports = Route

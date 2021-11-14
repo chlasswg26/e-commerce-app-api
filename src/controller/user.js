@@ -128,10 +128,9 @@ module.exports = {
     const main = async () => {
       try {
         const parameter = request.params
-        const cache = request.data
         const getUserById = await prisma.user.findUnique({
           where: {
-            id: cache.role === 'ADMIN' ? parameter.id : cache.id
+            id: parameter.id
           },
           select
         })
@@ -180,9 +179,7 @@ module.exports = {
         const data = request.body
         const checkUser = await prisma.user.findFirst({
           where: {
-            email: {
-              contains: data.email
-            }
+            email: data.email
           },
           select: {
             email: true

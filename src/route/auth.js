@@ -6,7 +6,6 @@ const {
   getRefreshToken,
   getLogout
 } = require('../controller/auth')
-const { cacheAuth } = require('../middleware/redis')
 const { verifyRefreshToken, verifyToken } = require('../middleware/jwt')
 const { multerHandler } = require('../middleware/multer')
 const validate = require('../middleware/validation')
@@ -26,7 +25,7 @@ Route
       min: 8
     }).withMessage('Password too short, min 8 character')
   ]), postLogin)
-  .get('/refresh-token', cacheAuth, verifyRefreshToken, getRefreshToken)
-  .get('/logout', cacheAuth, verifyToken, getLogout)
+  .get('/refresh-token', verifyRefreshToken, getRefreshToken)
+  .delete('/logout', verifyToken, getLogout)
 
 module.exports = Route

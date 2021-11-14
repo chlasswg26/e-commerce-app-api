@@ -1,6 +1,7 @@
 'use strict'
 
 const mailer = require('nodemailer')
+const fs = require('fs')
 require('dotenv').config()
 const {
   SERVICE_EMAIL,
@@ -70,5 +71,29 @@ module.exports = {
     if (pagination) result.pagination = pagination
 
     return response.status(result.status).json(result)
+  },
+  imageRemover: (request) => {
+    const file = request.files?.image || {}
+    const preview = request.files?.preview || {}
+
+    if (file.length) {
+      if (fs.existsSync(`./public/images/${file[0]?.filename}`)) {
+        fs.unlinkSync(`./public/images/${file[0]?.filename}`)
+      }
+    }
+
+    if (preview.length) {
+      const files = preview.map(image => {
+        return {
+          image: image.filename
+        }
+      })
+
+      files.forEach((file) => {
+        if (fs.existsSync(`./public/images/${file.image}`)) {
+          fs.unlinkSync(`./public/images/${file.image}`)
+        }
+      })
+    }
   }
 }

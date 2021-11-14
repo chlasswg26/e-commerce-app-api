@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken')
-const fs = require('fs')
 const prisma = require('../config/prisma')
 require('dotenv').config()
 const {
@@ -19,44 +18,91 @@ const select = {
   balance: true,
   role: true,
   status: true,
+  refresh_token: true,
   created_at: true,
   updated_at: true,
-  products: true,
-  customers: true
+  products: {
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      image: true,
+      preview: true,
+      status: true,
+      price: true,
+      discount: true,
+      category_id: true,
+      created_at: true,
+      updated_at: true,
+      category: {
+        select: {
+          id: true,
+          name: true,
+          description: true
+        }
+      }
+    }
+  },
+  customers: {
+    select: {
+      id: true,
+      customer_id: true,
+      product_id: true,
+      price: true,
+      quantity: true,
+      detail: true,
+      status: true,
+      created_at: true,
+      updated_at: true,
+      customer: {
+        select: {
+          id: true,
+          name: true,
+          image: true
+        }
+      }
+    }
+  }
 }
 
 module.exports = {
   verifyToken: (request, response, next) => {
     try {
-      const token = request?.cache?.accessToken
+      const authorization = request.headers.authorization
+
+      if (!authorization) {
+        return helper.response(response, 400, {
+          message: 'Unauthorized action'
+        })
+      }
+
+      const accessToken = authorization.split(' ')[1]
+      const getSignedCookie = request.signedCookies?.jwt
+
+      if (!accessToken) {
+        helper.imageRemover(request)
+
+        return helper.response(response, 400, {
+          message: 'Empty access token'
+        })
+      }
+
+      if (!getSignedCookie) {
+        helper.imageRemover(request)
+
+        return helper.response(response, 400, {
+          message: 'Session not found'
+        })
+      }
+
+      const getCookieContent = JSON.parse(getSignedCookie)
       const verifyOptions = {
         algorithms: JWT_ALGORITHM
       }
 
-      jwt.verify(token, JWT_SECRET_KEY, NODE_ENV === 'production' ? verifyOptions : false, async (err, decoded) => {
+      jwt.verify(accessToken, JWT_SECRET_KEY, NODE_ENV === 'production' ? verifyOptions : false, async (err, decoded) => {
         if (err && err.name) {
-          const file = request.files?.image || {}
-          const preview = request.files?.preview || {}
-
-          if (file.length) {
-            if (fs.existsSync(`./public/images/${file[0]?.filename}`)) {
-              fs.unlinkSync(`./public/images/${file[0]?.filename}`)
-            }
-          }
-
-          if (preview.length) {
-            const files = preview.map(image => {
-              return {
-                image: image.filename
-              }
-            })
-
-            files.forEach((file) => {
-              if (fs.existsSync(`./public/images/${file.image}`)) {
-                fs.unlinkSync(`./public/images/${file.image}`)
-              }
-            })
-          }
+          helper.imageRemover(request)
 
           return helper.response(response, 400, {
             message: err.message || err
@@ -64,95 +110,74 @@ module.exports = {
         } else {
           const getUser = await prisma.user.findFirst({
             where: {
-              email: decoded?.result?.email
+              email: decoded?.email,
+              refresh_token: getCookieContent?.token?.refreshToken
             },
             select
           })
 
           if (!getUser) {
-            const file = request.files?.image || {}
-            const preview = request.files?.preview || {}
-
-            if (file.length) {
-              if (fs.existsSync(`./public/images/${file[0]?.filename}`)) {
-                fs.unlinkSync(`./public/images/${file[0]?.filename}`)
-              }
-            }
-
-            if (preview.length) {
-              const files = preview.map(image => {
-                return {
-                  image: image.filename
-                }
-              })
-
-              files.forEach((file) => {
-                if (fs.existsSync(`./public/images/${file.image}`)) {
-                  fs.unlinkSync(`./public/images/${file.image}`)
-                }
-              })
-            }
+            helper.imageRemover(request)
 
             return helper.response(response, 400, {
-              message: 'Token mismatch'
+              message: 'Token mismatch, user not found'
             })
           }
 
-          request.data = getUser
+          request.data = {
+            user: getUser
+          }
 
           next()
         }
       })
     } catch (error) {
-      const file = request.files?.image || {}
-      const preview = request.files?.preview || {}
-
-      if (file.length) {
-        if (fs.existsSync(`./public/images/${file[0]?.filename}`)) {
-          fs.unlinkSync(`./public/images/${file[0]?.filename}`)
-        }
-      }
-
-      if (preview.length) {
-        const files = preview.map(image => {
-          return {
-            image: image.filename
-          }
-        })
-
-        files.forEach((file) => {
-          if (fs.existsSync(`./public/images/${file.image}`)) {
-            fs.unlinkSync(`./public/images/${file.image}`)
-          }
-        })
-      }
+      helper.imageRemover(request)
 
       return helper.response(response, 500, {
         message: error.message || error
       })
     }
   },
-  verifyRefreshToken: (request, response, next) => {
-    const token = request?.cache?.accessToken
-    const refreshToken = request?.cache?.refreshToken
-    const verifyOptions = {
-      algorithms: JWT_ALGORITHM
-    }
+  verifyRefreshToken: async (request, response, next) => {
+    try {
+      const getSignedCookie = request.signedCookies?.jwt
 
-    jwt.verify(refreshToken, JWT_REFRESH_SECRET_KEY, NODE_ENV === 'production' ? verifyOptions : false, (err, decoded) => {
-      if (err && err.name) {
+      if (!getSignedCookie) {
         return helper.response(response, 400, {
-          message: err.message || err
+          message: 'Session not found'
         })
-      } else {
-        const decodedData = jwt.decode(token, {
-          json: true
-        })
-
-        request.data = decodedData
-
-        next()
       }
-    })
+
+      const getCookieContent = JSON.parse(getSignedCookie)
+      const verifyOptions = {
+        algorithms: JWT_ALGORITHM
+      }
+
+      if (!getCookieContent?.token?.refreshToken) {
+        return helper.response(response, 400, {
+          message: 'Empty refresh token'
+        })
+      }
+
+      jwt.verify(getCookieContent?.token?.refreshToken, JWT_REFRESH_SECRET_KEY, NODE_ENV === 'production' ? verifyOptions : false, (err, decoded) => {
+        if (err && err.name) {
+          return helper.response(response, 400, {
+            message: err.message || err
+          })
+        } else {
+          request.data = {
+            email: decoded?.email,
+            remember: getCookieContent?.token?.remember
+          }
+
+          next()
+        }
+      })
+    } catch (error) {
+      return helper.response(response, 500, {
+        message: error.message || error
+      })
+    }
   }
 }

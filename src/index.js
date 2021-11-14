@@ -6,7 +6,8 @@ const bannerRoutes = require('./route/banner')
 const categoryRoutes = require('./route/category')
 const productRoutes = require('./route/product')
 const transactionRoutes = require('./route/transaction')
-const userTransaction = require('./route/user')
+const userRoutes = require('./route/user')
+const accountRoutes = require('./route/account')
 
 Route
   .use('/auth', authRoutes)
@@ -14,6 +15,7 @@ Route
   .use('/category', categoryRoutes)
   .use('/product', productRoutes)
   .use('/transaction', transactionRoutes)
-  .use('/user', userTransaction)
+  .use('/user', userRoutes)
+  .use('/account', accountRoutes)
 
 module.exports = Route

@@ -2,25 +2,27 @@
     "openapi": "3.0.0",
     "info": {
         "title": "E-Commerce Backend (RESTful APIs)",
+        "description": "E-Commerce RESTful APIs Postman documentation, see the example to know how to use.\n\n##### **ENDPOINT**\n\n- **LOCAL (DEVELOPMENT)** : ***http://localhost:3000/api/v1***\n- **CLOUD (PRODUCTION)** : ***https://blanja-api.up.railway.app/api/v1***\n\n\n##### **OPTIONAL**\n\n|   Path    | Method | Description |\n| :-------: | :---------: | :--------: |\n|     /:type/:value     | PUT | Type: Parameter type (order by)<br />Value: Parameter value (order value) |\n| /:type/:value | DELETE | Type: Parameter type (order by)<br />Value: Parameter value (order value) |\n\n| Query | Value | Description |\n| :---: | :---: | :---------: |\n|   search   | batman | Keyword data |\n|   limit   | 10 | Limit data |\n|   page   | 1 | Page number |\n| sortBy[OBJECT_KEY] | asc | Sort by object key of variables (Default is ['id'] within value ascending) |",
         "version": "1.0.0",
         "contact": {
             "name": "Ichlas Wardy Gustama",
-            "email": "ichlaswardy26@gmail.com"
+            "email": "ichlaswardy26@gmail.com",
+            "url": ""
         },
         "license": {
             "name": "MIT",
             "url": "https://choosealicense.com/licenses/mit/"
-        },
-        "description": "RESTful APIs Documentation & Live Test for backend purpose"
+        }
     },
     "servers": [
         {
-            "url": "http://localhost:5000/api/v1",
-            "description": "DEVELOPMENT ENDPOINT"
+            "url": "http://localhost:3000/api/v1",
+            "description": "DEVELOPMENT",
+            "variables": {}
         },
         {
             "url": "https://blanja-api.up.railway.app/api/v1",
-            "description": "PRODUCTION ENDPOINT"
+            "description": "PRODUCTION"
         }
     ],
     "components": {
@@ -36,32 +38,191 @@
     },
     "tags": [
         {
+            "name": "Account",
+            "description": "Account route path, use this path for getting  logged session on your client"
+        },
+        {
             "name": "Authentication",
-            "description": ""
+            "description": "Auth route path, use this path for make authentication on your client\n\n##### **OPTIONAL**\n\n| Variables | Description |\n| :-------: | :---------: |\n|     image     | User profile image |\n|     phone     | Seller phone number |\n|     store     | Seller store name |\n|     balance     | User Balance (Default is 0) |\n|     role     | User role (Default is member) |\n|     status     | User status (Default is ACTIVE) |"
         },
         {
-            "name": "Banner"
+            "name": "Banner",
+            "description": "Banner route path, use this path for make banner or ads on your client\n\n##### **OPTIONAL**\n\n| Variables | Description |\n| :-------: | :---------: |\n|     image     | Banner ads image |\n|     status     | Banner status (Default is ACTIVE) |"
         },
         {
-            "name": "Category"
+            "name": "Category",
+            "description": "Category route path, use this path for make category of product on your client\n\n##### **OPTIONAL**\n\n| Variables | Description |\n| :-------: | :---------: |\n|     status     | Category status (Default is ACTIVE) |"
         },
         {
-            "name": "Product"
+            "name": "Product",
+            "description": "Product route path, use this path for make product on your client\n\n##### **OPTIONAL**\n\n| Variables | Description |\n| :-------: | :---------: |\n|     discount     | Product discount price number |\n|     status     | Product status (Default is ACTIVE) |"
         },
         {
-            "name": "Transaction"
+            "name": "Transaction",
+            "description": "Transaction route path, use this path for make transaction on your client\n\n##### **OPTIONAL**\n\n| Variables | Description |\n| :-------: | :---------: |\n|     detail     | Transaction details |\n|     status     | Transaction status (Default is PENDING) |"
         },
         {
-            "name": "User"
+            "name": "User",
+            "description": "User route path, use this path for make users on your client\n\n##### **OPTIONAL**\n\n| Variables | Description |\n| :-------: | :---------: |\n|     image     | User profile image |\n|     phone     | Seller phone number |\n|     store     | Seller store name |\n|     balance     | User Balance (Default is 0) |\n|     role     | User role (Default is member) |\n|     status     | User status (Default is ACTIVE) |"
         }
     ],
     "paths": {
+        "/account/profile": {
+            "get": {
+                "tags": [
+                    "Account"
+                ],
+                "summary": "GET PROFILE",
+                "description": "Get account logged session",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {
+                            "Content-Security-Policy": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                                }
+                            },
+                            "X-DNS-Prefetch-Control": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "off"
+                                }
+                            },
+                            "Expect-CT": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "max-age=0"
+                                }
+                            },
+                            "X-Frame-Options": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "SAMEORIGIN"
+                                }
+                            },
+                            "Strict-Transport-Security": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "max-age=15552000; includeSubDomains"
+                                }
+                            },
+                            "X-Download-Options": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "noopen"
+                                }
+                            },
+                            "X-Content-Type-Options": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "nosniff"
+                                }
+                            },
+                            "X-Permitted-Cross-Domain-Policies": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "none"
+                                }
+                            },
+                            "Referrer-Policy": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "no-referrer"
+                                }
+                            },
+                            "X-XSS-Protection": {
+                                "schema": {
+                                    "type": "integer",
+                                    "example": "0"
+                                }
+                            },
+                            "Access-Control-Allow-Origin": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "*"
+                                }
+                            },
+                            "Content-Type": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "application/json; charset=utf-8"
+                                }
+                            },
+                            "Content-Length": {
+                                "schema": {
+                                    "type": "integer",
+                                    "example": "275"
+                                }
+                            },
+                            "ETag": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "W/\"113-EW8nUDXJ6h5qRxa61hlRSgm6Tvk\""
+                                }
+                            },
+                            "Date": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "Sun, 14 Nov 2021 03:29:10 GMT"
+                                }
+                            },
+                            "Connection": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "keep-alive"
+                                }
+                            },
+                            "Keep-Alive": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "timeout=5"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "status": 200,
+                                    "data": {
+                                        "id": 1,
+                                        "name": "Cahyo Ady",
+                                        "email": "cahyo4713@gmail.com",
+                                        "image": null,
+                                        "phone": null,
+                                        "store": null,
+                                        "balance": 0,
+                                        "role": "CUSTOMER",
+                                        "status": "ACTIVE",
+                                        "created_at": "2021-11-13T15:10:20.817Z",
+                                        "updated_at": "2021-11-14T03:26:49.611Z",
+                                        "products": [],
+                                        "customers": []
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": []
+            }
+        },
         "/auth/register": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "POST REGISTER",
+                "description": "Register new user",
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
@@ -393,10 +554,12 @@
                     "Authentication"
                 ],
                 "summary": "POST LOGIN",
+                "description": "Log in to account",
                 "requestBody": {
                     "content": {
                         "application/x-www-form-urlencoded": {
                             "schema": {
+                                "type": "object",
                                 "properties": {
                                     "email": {
                                         "type": "string",
@@ -763,11 +926,7 @@
                     "Authentication"
                 ],
                 "summary": "GET REFRESH TOKEN",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
+                "description": "Refresh new token",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -847,19 +1006,19 @@
                             "Content-Length": {
                                 "schema": {
                                     "type": "integer",
-                                    "example": "62"
+                                    "example": "202"
                                 }
                             },
                             "ETag": {
                                 "schema": {
                                     "type": "string",
-                                    "example": "W/\"3e-I9qbPZ9Gi0p3FmKoh6Gm14G4Xys\""
+                                    "example": "W/\"ca-aSPYhA4NrjLaRaiWv6MZFZ2VY/I\""
                                 }
                             },
                             "Date": {
                                 "schema": {
                                     "type": "string",
-                                    "example": "Tue, 14 Sep 2021 03:57:57 GMT"
+                                    "example": "Sat, 13 Nov 2021 17:51:35 GMT"
                                 }
                             },
                             "Connection": {
@@ -883,7 +1042,7 @@
                                 "example": {
                                     "status": 200,
                                     "data": {
-                                        "message": "Refresh token successfully"
+                                        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNhaHlvNDcxM0BnbWFpbC5jb20iLCJpYXQiOjE2MzY4MjU4OTUsImV4cCI6MTYzNjgyNTkyNX0.nnvR5RUYaJf19g6Lv7CYrVxn9efgZrSBfA8FEUPA8js"
                                     }
                                 }
                             }
@@ -1014,11 +1173,12 @@
             }
         },
         "/auth/logout": {
-            "get": {
+            "delete": {
                 "tags": [
                     "Authentication"
                 ],
-                "summary": "GET LOGOUT",
+                "summary": "DELETE LOGOUT",
+                "description": "Log out session",
                 "security": [
                     {
                         "bearerAuth": []
@@ -1275,6 +1435,7 @@
                     "Banner"
                 ],
                 "summary": "GET BANNER",
+                "description": "Get all data of banner including optionality Query (you can see on top of this documentation)",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1423,6 +1584,7 @@
                     "Banner"
                 ],
                 "summary": "POST BANNER",
+                "description": "Post new banner data",
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
@@ -1724,6 +1886,7 @@
                     "Banner"
                 ],
                 "summary": "GET BANNER BY ID",
+                "description": "Get banner data by ID's",
                 "parameters": [
                     {
                         "name": "id",
@@ -2014,6 +2177,7 @@
                     "Banner"
                 ],
                 "summary": "PUT BANNER",
+                "description": "Put some data to existing banner including optionality Path (you can see on top of this documentation)",
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
@@ -2437,6 +2601,7 @@
                     "Banner"
                 ],
                 "summary": "DELETE BANNER",
+                "description": "Delete existing banner data",
                 "security": [
                     {
                         "bearerAuth": []
@@ -2831,6 +2996,7 @@
                     "Category"
                 ],
                 "summary": "GET CATEGORY",
+                "description": "Get all data of category including optionality Query (you can see on top of this documentation)",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2977,10 +3143,12 @@
                     "Category"
                 ],
                 "summary": "POST CATEGORY",
+                "description": "Post new category data",
                 "requestBody": {
                     "content": {
                         "application/x-www-form-urlencoded": {
                             "schema": {
+                                "type": "object",
                                 "properties": {
                                     "name": {
                                         "type": "string",
@@ -3266,6 +3434,7 @@
                     "Category"
                 ],
                 "summary": "GET CATEGORY BY ID",
+                "description": "Get category data by ID's",
                 "parameters": [
                     {
                         "name": "id",
@@ -3555,10 +3724,12 @@
                     "Category"
                 ],
                 "summary": "PUT CATEGORY",
+                "description": "Put some data to existing category including optionality Path (you can see on top of this documentation)",
                 "requestBody": {
                     "content": {
                         "application/x-www-form-urlencoded": {
                             "schema": {
+                                "type": "object",
                                 "properties": {
                                     "name": {
                                         "type": "string",
@@ -3967,6 +4138,7 @@
                     "Category"
                 ],
                 "summary": "DELETE CATEGORY",
+                "description": "Delete existing category data",
                 "security": [
                     {
                         "bearerAuth": []
@@ -4361,6 +4533,12 @@
                     "Product"
                 ],
                 "summary": "GET PRODUCT",
+                "description": "Get all data of product including optionality Query (you can see on top of this documentation)",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -4528,6 +4706,7 @@
                     "Product"
                 ],
                 "summary": "POST PRODUCT",
+                "description": "Post new product data",
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
@@ -4868,6 +5047,7 @@
                     "Product"
                 ],
                 "summary": "GET PRODUCT BY ID",
+                "description": "Get product data by ID's",
                 "parameters": [
                     {
                         "name": "id",
@@ -5187,6 +5367,7 @@
                     "Product"
                 ],
                 "summary": "PUT PRODUCT",
+                "description": "Put some data to existing product including optionality Path (you can see on top of this documentation)",
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
@@ -5620,6 +5801,7 @@
                     "Product"
                 ],
                 "summary": "DELETE PRODUCT",
+                "description": "Delete existing product data",
                 "security": [
                     {
                         "bearerAuth": []
@@ -6014,6 +6196,7 @@
                     "Transaction"
                 ],
                 "summary": "GET TRANSACTION",
+                "description": "Get all data of transaction including optionality Query (you can see on top of this documentation)",
                 "security": [
                     {
                         "bearerAuth": []
@@ -6389,10 +6572,12 @@
                     "Transaction"
                 ],
                 "summary": "POST TRANSACTION",
+                "description": "Post new transaction data",
                 "requestBody": {
                     "content": {
                         "application/x-www-form-urlencoded": {
                             "schema": {
+                                "type": "object",
                                 "properties": {
                                     "product_id": {
                                         "type": "integer",
@@ -6852,6 +7037,7 @@
                     "Transaction"
                 ],
                 "summary": "GET TRANSACTION BY ID",
+                "description": "Get transaction data by ID's",
                 "security": [
                     {
                         "bearerAuth": []
@@ -7171,10 +7357,12 @@
                     "Transaction"
                 ],
                 "summary": "PUT TRANSACTION",
+                "description": "Put some data to existing product including optionality Path (you can see on top of this documentation)",
                 "requestBody": {
                     "content": {
                         "application/x-www-form-urlencoded": {
                             "schema": {
+                                "type": "object",
                                 "properties": {
                                     "status": {
                                         "type": "string",
@@ -7565,7 +7753,7 @@
                                 "example": {
                                     "status": 500,
                                     "data": {
-                                        "message": "\nInvalid `prisma.transaction.update()` invocation:\n\n{\n  where: {\n    id: 1\n  },\n  data: {\n    status: 'WICKED'\n            ~~~~~~~~\n  },\n  select: {\n    id: true,\n    customer_id: true,\n    product_id: true,\n    price: true,\n    status: true,\n    created_at: true,\n    updated_at: true,\n    customer: {\n      select: {\n        id: true,\n        name: true,\n        image: true\n      }\n    },\n    product: {\n      select: {\n        id: true,\n        name: true,\n        description: true,\n        image: true,\n        preview: true,\n        status: true,\n        price: true,\n        discount: true,\n        seller_id: true,\n        category_id: true,\n        created_at: true,\n        updated_at: true,\n        seller: {\n          select: {\n            id: true,\n            name: true,\n            image: true,\n            phone: true,\n            store: true\n          }\n        },\n        category: {\n          select: {\n            id: true,\n            name: true,\n            description: true\n          }\n        }\n      }\n    }\n  }\n}\n\nArgument status: Provided value 'WICKED' of type String on prisma.updateOnetransaction is not a enumTypes.\nâ†’ Possible values: Transaction.PENDING, Transaction.PACKED, Transaction.SENT, Transaction.DELIVERED\n\n"
+                                        "message": "\nInvalid `prisma.transaction.update()` invocation:\n\n{\n  where: {\n    id: 1\n  },\n  data: {\n    status: 'WICKED'\n            ~~~~~~~~\n  },\n  select: {\n    id: true,\n    customer_id: true,\n    product_id: true,\n    price: true,\n    status: true,\n    created_at: true,\n    updated_at: true,\n    customer: {\n      select: {\n        id: true,\n        name: true,\n        image: true\n      }\n    },\n    product: {\n      select: {\n        id: true,\n        name: true,\n        description: true,\n        image: true,\n        preview: true,\n        status: true,\n        price: true,\n        discount: true,\n        seller_id: true,\n        category_id: true,\n        created_at: true,\n        updated_at: true,\n        seller: {\n          select: {\n            id: true,\n            name: true,\n            image: true,\n            phone: true,\n            store: true\n          }\n        },\n        category: {\n          select: {\n            id: true,\n            name: true,\n            description: true\n          }\n        }\n      }\n    }\n  }\n}\n\nArgument status: Provided value 'WICKED' of type String on prisma.updateOnetransaction is not a enumTypes.\n→ Possible values: Transaction.PENDING, Transaction.PACKED, Transaction.SENT, Transaction.DELIVERED\n\n"
                                     }
                                 }
                             }
@@ -7580,11 +7768,7 @@
                     "User"
                 ],
                 "summary": "GET USER",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
+                "description": "Get all data of user including optionality Query (you can see on top of this documentation)\n\n##### **OPTIONAL**\n\n| Query | Value | Description |\n| :---: | :---: | :---------: |\n|   session   | ADMIN | Gain admin access to get all user data |",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -7697,90 +7881,116 @@
                                 "schema": {
                                     "type": "object"
                                 },
-                                "example": {
-                                    "status": 200,
-                                    "data": [
-                                        {
-                                            "id": 1,
-                                            "name": "Cahyo Ady",
-                                            "email": "cahyo4713@gmail.com",
-                                            "image": "http://localhost:5000/storage/images/20210914010634175-07a86ba08f83de3db83f568a1d561edc661d.png",
-                                            "phone": null,
-                                            "store": null,
-                                            "balance": 0,
-                                            "role": "ADMIN",
-                                            "status": "ACTIVE",
-                                            "created_at": "2021-09-14T01:07:59.172Z",
-                                            "updated_at": "2021-09-14T01:07:59.173Z",
-                                            "products": [
+                                "examples": {
+                                    "example-0": {
+                                        "summary": "GET USER - SUCCESS",
+                                        "value": {
+                                            "status": 200,
+                                            "data": [
                                                 {
                                                     "id": 1,
-                                                    "name": "Celana Tradisional Model Arab",
-                                                    "description": "Celana yang dilengkapi dengan model khas pakaian tradisional arab",
-                                                    "image": "http://localhost:5000/storage/images/20210915130746831-3ecece5daff56624f6ad147a85613f6836ef.png",
-                                                    "preview": [
+                                                    "name": "Cahyo Ady",
+                                                    "email": "cahyo4713@gmail.com",
+                                                    "image": "http://localhost:5000/storage/images/20210914010634175-07a86ba08f83de3db83f568a1d561edc661d.png",
+                                                    "phone": null,
+                                                    "store": null,
+                                                    "balance": 0,
+                                                    "role": "ADMIN",
+                                                    "status": "ACTIVE",
+                                                    "created_at": "2021-09-14T01:07:59.172Z",
+                                                    "updated_at": "2021-09-14T01:07:59.173Z",
+                                                    "products": [
                                                         {
-                                                            "image": "20210915130746835-ae8d2718b5aef71c03bf4be1fe39d5b7d2f6.png",
-                                                            "imageUrl": "http://localhost:5000/storage/images/20210915130746835-ae8d2718b5aef71c03bf4be1fe39d5b7d2f6.png"
-                                                        },
-                                                        {
-                                                            "image": "20210915130746838-a1e2dd1b0ed63bb8bb07694f5eaf940e4c1c.png",
-                                                            "imageUrl": "http://localhost:5000/storage/images/20210915130746838-a1e2dd1b0ed63bb8bb07694f5eaf940e4c1c.png"
-                                                        },
-                                                        {
-                                                            "image": "20210915130747158-2ad680a4bdcf5f6a9908540a9f88d825c5b6.png",
-                                                            "imageUrl": "http://localhost:5000/storage/images/20210915130747158-2ad680a4bdcf5f6a9908540a9f88d825c5b6.png"
+                                                            "id": 1,
+                                                            "name": "Celana Tradisional Model Arab",
+                                                            "description": "Celana yang dilengkapi dengan model khas pakaian tradisional arab",
+                                                            "image": "http://localhost:5000/storage/images/20210915130746831-3ecece5daff56624f6ad147a85613f6836ef.png",
+                                                            "preview": [
+                                                                {
+                                                                    "image": "20210915130746835-ae8d2718b5aef71c03bf4be1fe39d5b7d2f6.png",
+                                                                    "imageUrl": "http://localhost:5000/storage/images/20210915130746835-ae8d2718b5aef71c03bf4be1fe39d5b7d2f6.png"
+                                                                },
+                                                                {
+                                                                    "image": "20210915130746838-a1e2dd1b0ed63bb8bb07694f5eaf940e4c1c.png",
+                                                                    "imageUrl": "http://localhost:5000/storage/images/20210915130746838-a1e2dd1b0ed63bb8bb07694f5eaf940e4c1c.png"
+                                                                },
+                                                                {
+                                                                    "image": "20210915130747158-2ad680a4bdcf5f6a9908540a9f88d825c5b6.png",
+                                                                    "imageUrl": "http://localhost:5000/storage/images/20210915130747158-2ad680a4bdcf5f6a9908540a9f88d825c5b6.png"
+                                                                }
+                                                            ],
+                                                            "status": "ACTIVE",
+                                                            "price": 40000,
+                                                            "discount": 0,
+                                                            "category_id": 1,
+                                                            "created_at": "2021-09-15T13:07:48.496Z",
+                                                            "updated_at": "2021-09-15T13:07:48.501Z",
+                                                            "category": {
+                                                                "id": 1,
+                                                                "name": "Celana",
+                                                                "description": "Celana untuk ukuran dewasa saja"
+                                                            }
                                                         }
                                                     ],
-                                                    "status": "ACTIVE",
-                                                    "price": 40000,
-                                                    "discount": 0,
-                                                    "category_id": 1,
-                                                    "created_at": "2021-09-15T13:07:48.496Z",
-                                                    "updated_at": "2021-09-15T13:07:48.501Z",
-                                                    "category": {
-                                                        "id": 1,
-                                                        "name": "Celana",
-                                                        "description": "Celana untuk ukuran dewasa saja"
-                                                    }
-                                                }
-                                            ],
-                                            "customers": [
-                                                {
-                                                    "id": 1,
-                                                    "customer_id": 1,
-                                                    "product_id": 1,
-                                                    "price": 50000,
-                                                    "quantity": null,
-                                                    "detail": null,
-                                                    "status": "PACKED",
-                                                    "created_at": "2021-09-15T16:51:16.575Z",
-                                                    "updated_at": "2021-09-15T16:57:11.610Z",
-                                                    "customer": {
-                                                        "id": 1,
-                                                        "name": "Cahyo Ady",
-                                                        "image": "http://localhost:5000/storage/images/20210914010634175-07a86ba08f83de3db83f568a1d561edc661d.png"
-                                                    }
-                                                },
-                                                {
-                                                    "id": 3,
-                                                    "customer_id": 1,
-                                                    "product_id": 1,
-                                                    "price": 50000,
-                                                    "quantity": 1,
-                                                    "detail": "You're order is created",
-                                                    "status": "PENDING",
-                                                    "created_at": "2021-09-16T15:17:53.843Z",
-                                                    "updated_at": "2021-09-16T15:17:53.846Z",
-                                                    "customer": {
-                                                        "id": 1,
-                                                        "name": "Cahyo Ady",
-                                                        "image": "http://localhost:5000/storage/images/20210914010634175-07a86ba08f83de3db83f568a1d561edc661d.png"
-                                                    }
+                                                    "customers": [
+                                                        {
+                                                            "id": 1,
+                                                            "customer_id": 1,
+                                                            "product_id": 1,
+                                                            "price": 50000,
+                                                            "quantity": null,
+                                                            "detail": null,
+                                                            "status": "PACKED",
+                                                            "created_at": "2021-09-15T16:51:16.575Z",
+                                                            "updated_at": "2021-09-15T16:57:11.610Z",
+                                                            "customer": {
+                                                                "id": 1,
+                                                                "name": "Cahyo Ady",
+                                                                "image": "http://localhost:5000/storage/images/20210914010634175-07a86ba08f83de3db83f568a1d561edc661d.png"
+                                                            }
+                                                        },
+                                                        {
+                                                            "id": 3,
+                                                            "customer_id": 1,
+                                                            "product_id": 1,
+                                                            "price": 50000,
+                                                            "quantity": 1,
+                                                            "detail": "You're order is created",
+                                                            "status": "PENDING",
+                                                            "created_at": "2021-09-16T15:17:53.843Z",
+                                                            "updated_at": "2021-09-16T15:17:53.846Z",
+                                                            "customer": {
+                                                                "id": 1,
+                                                                "name": "Cahyo Ady",
+                                                                "image": "http://localhost:5000/storage/images/20210914010634175-07a86ba08f83de3db83f568a1d561edc661d.png"
+                                                            }
+                                                        }
+                                                    ]
                                                 }
                                             ]
                                         }
-                                    ]
+                                    },
+                                    "example-1": {
+                                        "summary": "GET USER (IF NOT ADMIN) - SUCCESS",
+                                        "value": {
+                                            "status": 200,
+                                            "data": {
+                                                "id": 1,
+                                                "name": "Cahyo Ady",
+                                                "email": "cahyo4713@gmail.com",
+                                                "image": "http://localhost:3000/storage/images/null",
+                                                "phone": null,
+                                                "store": null,
+                                                "balance": 0,
+                                                "role": "CUSTOMER",
+                                                "status": "ACTIVE",
+                                                "created_at": "2021-11-09T17:55:03.098Z",
+                                                "updated_at": "2021-11-09T17:55:03.107Z",
+                                                "products": [],
+                                                "customers": []
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -7793,6 +8003,7 @@
                     "User"
                 ],
                 "summary": "POST USER",
+                "description": "Post new user data",
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
@@ -7824,11 +8035,6 @@
                         }
                     }
                 },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -8113,11 +8319,7 @@
                     "User"
                 ],
                 "summary": "GET USER BY ID",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
+                "description": "Get user data by ID's",
                 "parameters": [
                     {
                         "name": "id",
@@ -8476,6 +8678,7 @@
                     "User"
                 ],
                 "summary": "PUT USER",
+                "description": "Put some data to existing user including optionality Path (you can see on top of this documentation)",
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
@@ -8502,11 +8705,6 @@
                         }
                     }
                 },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
                 "parameters": [
                     {
                         "name": "id",
@@ -8896,11 +9094,7 @@
                     "User"
                 ],
                 "summary": "DELETE USER",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
+                "description": "Delete existing user data",
                 "parameters": [
                     {
                         "name": "value",
@@ -9284,6 +9478,10 @@
                 }
             }
         }
+    },
+    "externalDocs": {
+        "url": "https://documenter.getpostman.com/view/11433882/UUxtDpyx",
+        "description": "Postman Documentation"
     },
     "security": []
 }

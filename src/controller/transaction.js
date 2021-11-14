@@ -58,7 +58,7 @@ module.exports = {
     const main = async () => {
       try {
         const filter = request.query
-        const cache = request.data
+        const cache = request.data.user
         let where = {
           OR: [
             {
@@ -193,7 +193,7 @@ module.exports = {
     const main = async () => {
       try {
         const parameter = request.params
-        const cache = request.data
+        const cache = request.data.user
 
         if (cache?.role !== 'ADMIN' && cache?.id !== parameter.id) {
           return helper.response(response, 400, {
@@ -242,7 +242,7 @@ module.exports = {
     const main = async () => {
       try {
         const data = request.body
-        const cache = request.data
+        const cache = request.data.user
         const checkProduct = await prisma.product.findFirst({
           where: {
             id: data.product_id
@@ -295,7 +295,7 @@ module.exports = {
       try {
         const parameter = request.params
         const data = request.body
-        const cache = request.data
+        const cache = request.data.user
         const checkTransaction = await prisma.transaction.findFirst({
           where: {
             [parameter.type || 'id']: parameter.value

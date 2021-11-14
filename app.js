@@ -3,13 +3,15 @@ const helmet = require('helmet')
 const morgan = require('morgan')
 const cors = require('cors')
 const path = require('path')
+const cookieParser = require('cookie-parser')
 const app = express()
 require('dotenv').config()
 const {
   PORT,
   HOST,
   NODE_ENV,
-  FRONTEND_URL
+  FRONTEND_URL,
+  COOKIE_SECRET_KEY
 } = process.env
 const routeNavigator = require('./src/index')
 const favicon = require('serve-favicon')
@@ -40,7 +42,9 @@ expressJSDocSwagger(app)({
   swaggerUiOptions: {}
 }, swaggerJSON)
 
+app.set('trust proxy', 'loopback, linklocal, uniquelocal')
 app.use(helmet())
+app.use(cookieParser(COOKIE_SECRET_KEY))
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 app.use('/storage', express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({ extended: true }))

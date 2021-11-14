@@ -9,20 +9,19 @@ const {
   deleteUser
 } = require('../controller/user')
 const { verifyToken } = require('../middleware/jwt')
-const { cacheAuth } = require('../middleware/redis')
 const { multerHandler } = require('../middleware/multer')
 const validate = require('../middleware/validation')
-const { admin, customer } = require('../middleware/authorization')
+const { admin } = require('../middleware/authorization')
 
 Route
   .get('/', validate([
     query('search').escape().trim(),
     query('limit').escape().trim().toInt(),
     query('page').escape().trim().toInt()
-  ]), cacheAuth, verifyToken, admin, getUser)
+  ]), verifyToken, admin, getUser)
   .get('/:id', validate([
     param('id').escape().trim().notEmpty().withMessage('User ID can\'t be empty').bail().isNumeric().withMessage('User ID must be numeric').bail().toInt()
-  ]), cacheAuth, verifyToken, customer, getUserById)
+  ]), verifyToken, admin, getUserById)
   .post('/', multerHandler, validate([
     check('name').escape().trim().notEmpty().withMessage('User name can\'t be empty'),
     check('email').escape().trim().notEmpty().withMessage('E-mail address can\'t be empty').bail().isEmail().withMessage('E-mail bad format'),
@@ -31,18 +30,18 @@ Route
     }).withMessage('Password too short, min 8 character'),
     check('phone').escape().trim(),
     check('store').escape().trim()
-  ]), cacheAuth, verifyToken, admin, postUser)
+  ]), verifyToken, admin, postUser)
   .put('/:value', multerHandler, validate([
     param('value').escape().trim().notEmpty().withMessage('User parameter value can\'t be empty').bail().isNumeric().withMessage('User parameter value must be numeric').bail().toInt()
-  ]), cacheAuth, verifyToken, admin, putUser)
+  ]), verifyToken, admin, putUser)
   .put('/:type/:value', multerHandler, validate([
     param('value').escape().trim().notEmpty().withMessage('User parameter value can\'t be empty')
-  ]), cacheAuth, verifyToken, admin, putUser)
+  ]), verifyToken, admin, putUser)
   .delete('/:value', validate([
     param('value').escape().trim().notEmpty().withMessage('User parameter value can\'t be empty').bail().isNumeric().withMessage('User parameter value must be numeric').bail().toInt()
-  ]), cacheAuth, verifyToken, admin, deleteUser)
+  ]), verifyToken, admin, deleteUser)
   .delete('/:type/:value', validate([
     param('value').escape().trim().notEmpty().withMessage('User parameter value can\'t be empty')
-  ]), cacheAuth, verifyToken, admin, deleteUser)
+  ]), verifyToken, admin, deleteUser)
 
 module.exports = Route

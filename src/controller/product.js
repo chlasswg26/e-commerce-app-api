@@ -108,7 +108,6 @@ module.exports = {
             previous: (parseInt(filter.page || 1) - 1) <= 0 ? false : parseInt(filter.page || 1) - 1
           }
         }
-
         const {
           redisKey,
           cached,
@@ -188,7 +187,7 @@ module.exports = {
     const main = async () => {
       try {
         const data = request.body
-        const cache = request.data
+        const cache = request.data.user
         const file = request.files?.image || {}
         const preview = request.files?.preview || {}
 
@@ -263,7 +262,7 @@ module.exports = {
       try {
         const parameter = request.params
         const data = request.body
-        const cache = request.data
+        const cache = request.data.user
         const file = request.files?.image || {}
         const preview = request.files?.preview || {}
         const checkProduct = await prisma.product.findFirst({

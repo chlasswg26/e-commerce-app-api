@@ -10,7 +10,6 @@ const {
 } = require('../controller/category')
 const { admin } = require('../middleware/authorization')
 const { verifyToken } = require('../middleware/jwt')
-const { cacheAuth } = require('../middleware/redis')
 const validate = require('../middleware/validation')
 
 Route
@@ -25,22 +24,22 @@ Route
   .post('/', validate([
     check('name').escape().trim().notEmpty().withMessage('Category name can\'t be empty'),
     check('description').escape().trim()
-  ]), cacheAuth, verifyToken, admin, postCategory)
+  ]), verifyToken, admin, postCategory)
   .put('/:value', validate([
     param('value').escape().trim().notEmpty().withMessage('Category parameter value can\'t be empty').bail().isNumeric().withMessage('Category parameter value must be numeric').bail().toInt(),
     check('name').escape().trim().notEmpty().withMessage('Category name can\'t be empty'),
     check('description').escape().trim()
-  ]), cacheAuth, verifyToken, admin, putCategory)
+  ]), verifyToken, admin, putCategory)
   .put('/:type/:value', validate([
     param('value').escape().trim().notEmpty().withMessage('Category parameter value can\'t be empty'),
     check('name').escape().trim().notEmpty().withMessage('Category name can\'t be empty'),
     check('description').escape().trim()
-  ]), cacheAuth, verifyToken, admin, putCategory)
+  ]), verifyToken, admin, putCategory)
   .delete('/:value', validate([
     param('value').escape().trim().notEmpty().withMessage('Category parameter value can\'t be empty').bail().isNumeric().withMessage('Category parameter value must be numeric').bail().toInt()
-  ]), cacheAuth, verifyToken, admin, deleteCategory)
+  ]), verifyToken, admin, deleteCategory)
   .delete('/:type/:value', validate([
     param('value').escape().trim().notEmpty().withMessage('Category parameter value can\'t be empty')
-  ]), cacheAuth, verifyToken, admin, deleteCategory)
+  ]), verifyToken, admin, deleteCategory)
 
 module.exports = Route

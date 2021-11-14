@@ -4,6 +4,19 @@
 [![Documentation](https://img.shields.io/badge/documentation-yes-brightgreen.svg)](https://documenter.getpostman.com/view/11433882/UUxtDpyx)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://choosealicense.com/licenses/mit/)
 
+![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
+![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=for-the-badge&logo=eslint&logoColor=white)
+![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
+[![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)](https://documenter.getpostman.com/view/11433882/UUxtDpyx)
+[![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white)](https://blanja-api.up.railway.app/v1/documentation)
+![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)
+![Yarn](https://img.shields.io/badge/yarn-%232C8EBB.svg?style=for-the-badge&logo=yarn&logoColor=white)
+![NPM](https://img.shields.io/badge/NPM-%23000000.svg?style=for-the-badge&logo=npm&logoColor=white)
+
 > Simplified backend for e-commerce apps
 
 ### 🏠 [Homepage](https://github.com/chlasswg26/e-commerce-app-api#readme)
@@ -18,6 +31,7 @@
 - AUTHENTICATION
 - AUTHORIZATION
 - JWT TOKEN
+- ENCRYPTION
 - FILE UPLOAD
 - SANITIZER
 - VALIDATOR
@@ -28,6 +42,7 @@
 
 - [@prisma/client](https://ghub.io/@prisma/client): Prisma Client is an auto-generated, type-safe and modern JavaScript/TypeScript ORM for Node.js that&#39;s tailored to your data. Supports MySQL, PostgreSQL, MariaDB, SQLite databases.
 - [bcrypt](https://ghub.io/bcrypt): A bcrypt library for NodeJS.
+- [cookie-parser](https://ghub.io/cookie-parser): Parse HTTP request cookies
 - [cors](https://ghub.io/cors): Node.js CORS middleware
 - [cross-env](https://ghub.io/cross-env): Run scripts that set and use environment variables across platforms
 - [dotenv](https://ghub.io/dotenv): Loads environment variables from .env file
@@ -104,6 +119,7 @@ npm install
 |      ENCRYPTION_PASSWORD      | - | Encryption password (your password) |
 |      ENCRYPTION_SALT      | - | Encryption salt (your salt) |
 |      ENCRYPTION_DIGEST      | - | Encryption digest (see on wikipedia algorithm digest) |
+|      COOKIE_SECRET_KEY      | - | Cookie secret key (random) |
 
 
 

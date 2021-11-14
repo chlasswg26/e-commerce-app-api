@@ -9,7 +9,7 @@ const {
   deleteProduct
 } = require('../controller/product')
 const { verifyToken } = require('../middleware/jwt')
-const { cacheAuth, cacheProduct } = require('../middleware/redis')
+const { cacheProduct } = require('../middleware/redis')
 const { multerHandler } = require('../middleware/multer')
 const validate = require('../middleware/validation')
 const { seller } = require('../middleware/authorization')
@@ -28,26 +28,26 @@ Route
     check('description').escape().trim(),
     check('price').escape().trim().isNumeric().withMessage('Price can\'t be empty').bail().toFloat(),
     check('category_id').escape().trim().notEmpty().withMessage('Category ID\'s can\'t be empty').bail().isNumeric().withMessage('Category ID\'s must be numeric').bail().toInt()
-  ]), cacheAuth, verifyToken, seller, postProduct)
+  ]), verifyToken, seller, postProduct)
   .put('/:value', multerHandler, validate([
     param('value').escape().trim().notEmpty().withMessage('Product parameter value can\'t be empty').bail().isNumeric().withMessage('Product parameter value must be numeric').bail().toInt(),
     check('name').escape().trim().notEmpty().withMessage('Product name can\'t be empty'),
     check('description').escape().trim(),
     check('price').escape().trim().isNumeric().withMessage('Price can\'t be empty').bail().toFloat(),
     check('category_id').escape().trim().notEmpty().withMessage('Category ID\'s can\'t be empty').bail().isNumeric().withMessage('Category ID\'s must be numeric').bail().toInt()
-  ]), cacheAuth, verifyToken, seller, putProduct)
+  ]), verifyToken, seller, putProduct)
   .put('/:type/:value', multerHandler, validate([
     param('value').escape().trim().notEmpty().withMessage('Product parameter value can\'t be empty'),
     check('name').escape().trim().notEmpty().withMessage('Product name can\'t be empty'),
     check('description').escape().trim(),
     check('price').escape().trim().isNumeric().withMessage('Price can\'t be empty').bail().toFloat(),
     check('category_id').escape().trim().notEmpty().withMessage('Category ID\'s can\'t be empty').bail().isNumeric().withMessage('Category ID\'s must be numeric').bail().toInt()
-  ]), cacheAuth, verifyToken, seller, putProduct)
+  ]), verifyToken, seller, putProduct)
   .delete('/:value', validate([
     param('value').escape().trim().notEmpty().withMessage('Product parameter value can\'t be empty').bail().isNumeric().withMessage('Product parameter value must be numeric').bail().toInt()
-  ]), cacheAuth, verifyToken, seller, deleteProduct)
+  ]), verifyToken, seller, deleteProduct)
   .delete('/:type/:value', validate([
     param('value').escape().trim().notEmpty().withMessage('Product parameter value can\'t be empty')
-  ]), cacheAuth, verifyToken, seller, deleteProduct)
+  ]), verifyToken, seller, deleteProduct)
 
 module.exports = Route
