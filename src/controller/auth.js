@@ -77,6 +77,8 @@ module.exports = {
         const data = request.body
         const file = request.files?.image || {}
 
+        console.log(file)
+
         if (file.length) {
           data.image = file[0]?.filename
         }
@@ -110,6 +112,13 @@ module.exports = {
           select
         })
 
+        if (!result) {
+          return helper.response(response, 400, {
+            message: 'Registration failed'
+          })
+        }
+
+        result.image = `${request.protocol}://${request.get('host')}/storage/images/${data.image}`
         result.products.forEach((file) => {
           file.image = `${request.protocol}://${request.get('host')}/storage/images/${file.image}`
           file.preview.forEach((file) => {
