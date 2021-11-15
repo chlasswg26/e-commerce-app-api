@@ -58,7 +58,7 @@ module.exports = {
     const main = async () => {
       try {
         const filter = request.query
-        const cache = request.data.user
+        const user = request.data.user
         let where = {
           OR: [
             {
@@ -121,11 +121,11 @@ module.exports = {
           ]
         }
 
-        if (cache?.role !== 'ADMIN') {
+        if (user?.role !== 'ADMIN') {
           where = {
             ...where,
             AND: {
-              customer_id: cache?.id
+              customer_id: user?.id
             }
           }
         }
@@ -193,20 +193,19 @@ module.exports = {
     const main = async () => {
       try {
         const parameter = request.params
-        const cache = request.data.user
-
-        if (cache?.role !== 'ADMIN' && cache?.id !== parameter.id) {
-          return helper.response(response, 400, {
-            message: 'ID\'s not match'
-          })
-        }
-
+        const user = request.data.user
         const getTransactionById = await prisma.transaction.findUnique({
           where: {
             id: parameter.id
           },
           select
         })
+
+        if (user?.id !== getTransactionById?.customer_id) {
+          return helper.response(response, 400, {
+            message: 'You have no transaction with the same ID\'s'
+          })
+        }
 
         if (!getTransactionById) {
           return helper.response(response, 400, {
@@ -242,7 +241,7 @@ module.exports = {
     const main = async () => {
       try {
         const data = request.body
-        const cache = request.data.user
+        const user = request.data.user
         const checkProduct = await prisma.product.findFirst({
           where: {
             id: data.product_id
@@ -252,7 +251,7 @@ module.exports = {
           }
         })
 
-        if (cache?.id === checkProduct.seller_id) {
+        if (user?.id === checkProduct.seller_id) {
           return helper.response(response, 400, {
             message: 'You can\'t buy your product by your self'
           })
@@ -261,7 +260,7 @@ module.exports = {
         const postTransaction = await prisma.transaction.create({
           data: {
             ...data,
-            customer_id: cache?.id
+            customer_id: user?.id
           },
           select
         })
@@ -295,7 +294,7 @@ module.exports = {
       try {
         const parameter = request.params
         const data = request.body
-        const cache = request.data.user
+        const user = request.data.user
         const checkTransaction = await prisma.transaction.findFirst({
           where: {
             [parameter.type || 'id']: parameter.value
@@ -309,7 +308,7 @@ module.exports = {
           }
         })
 
-        if (cache?.id !== checkTransaction.product.seller_id) {
+        if (user?.id !== checkTransaction.product.seller_id) {
           return helper.response(response, 400, {
             message: 'You\'re not the seller of this product'
           })

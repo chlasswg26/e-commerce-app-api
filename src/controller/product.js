@@ -187,7 +187,7 @@ module.exports = {
     const main = async () => {
       try {
         const data = request.body
-        const cache = request.data.user
+        const user = request.data.user
         const file = request.files?.image || {}
         const preview = request.files?.preview || {}
 
@@ -206,7 +206,7 @@ module.exports = {
         const postProduct = await prisma.product.create({
           data: {
             ...data,
-            seller_id: cache?.id
+            seller_id: user?.id
           },
           select
         })
@@ -262,7 +262,7 @@ module.exports = {
       try {
         const parameter = request.params
         const data = request.body
-        const cache = request.data.user
+        const user = request.data.user
         const file = request.files?.image || {}
         const preview = request.files?.preview || {}
         const checkProduct = await prisma.product.findFirst({
@@ -283,7 +283,7 @@ module.exports = {
           }
         })
 
-        if (cache?.id !== checkProduct.seller_id) {
+        if (user?.id !== checkProduct.seller_id) {
           return helper.response(response, 400, {
             message: 'You\'re not the seller of this product'
           })

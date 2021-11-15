@@ -13,7 +13,10 @@ const {
   NODE_ENV
 } = process.env
 const prisma = require('../config/prisma')
-const { encrypt, decrypt } = require('../helper/crypto-string')
+const { encrypt } = require('../helper/crypto-string')
+const { promisify } = require('util')
+const redisClient = require('../config/redis')
+const redisHelper = require('../helper/redis')
 const select = {
   id: true,
   name: true,
@@ -24,7 +27,6 @@ const select = {
   balance: true,
   role: true,
   status: true,
-  refresh_token: true,
   created_at: true,
   updated_at: true,
   products: {
@@ -171,108 +173,115 @@ module.exports = {
           })
         }
 
-        const comparePassword = bcrypt.compareSync(data.password, checkUser?.password)
-        const getSignedCookie = request.signedCookies?.jwt
-        let getCookieContent = {}
+        const get = promisify(redisClient.get).bind(redisClient)
 
-        if (getSignedCookie) {
-          getCookieContent = decrypt(13, getSignedCookie || {}, response)
-        }
+        get(`auth:${checkUser?.email}`)
+          .then(async (result) => {
+            const comparePassword = bcrypt.compareSync(data.password, checkUser?.password)
+            const cache = JSON.parse(result)
 
-        delete checkUser?.password
+            delete checkUser?.password
 
-        if (!comparePassword) {
-          return helper.response(response, 400, {
-            message: 'Incorrect password'
+            if (!comparePassword) {
+              return helper.response(response, 400, {
+                message: 'Incorrect password'
+              })
+            }
+
+            if (checkUser?.status !== 'ACTIVE') {
+              return helper.response(response, 400, {
+                message: 'Unverified account'
+              })
+            }
+
+            if (cache === 'online') {
+              return helper.response(response, 400, {
+                message: 'Account is online on another device, please sign out first'
+              })
+            }
+
+            checkUser.image = `${request.protocol}://${request.get('host')}/storage/images/${checkUser?.image}`
+
+            const isRemember = data?.remember
+            let jwtOption = {}
+
+            if (NODE_ENV === 'production') {
+              jwtOption = {
+                algorithm: JWT_ALGORITHM
+              }
+            }
+
+            const dataToSign = {
+              email: checkUser.email
+            }
+            const accessToken = jwt.sign(dataToSign, JWT_SECRET_KEY, {
+              ...jwtOption,
+              expiresIn: JWT_TOKEN_LIFE
+            })
+            const refreshToken = jwt.sign(dataToSign, JWT_REFRESH_SECRET_KEY, {
+              ...jwtOption,
+              expiresIn: JWT_REFRESH_TOKEN_LIFE
+            })
+            const cookieContent = {
+              token: {
+                email: checkUser?.email,
+                remember: isRemember || 'OFF',
+                refreshToken: refreshToken
+              }
+            }
+            const encryptedCookieContent = encrypt(13, cookieContent, response)
+            const maxAgeCookie = new Duration(JWT_REFRESH_TOKEN_LIFE)
+            const updateRefreshToken = await prisma.user.update({
+              where: {
+                email: checkUser?.email
+              },
+              data: {
+                refresh_token: refreshToken
+              },
+              select
+            })
+
+            if (!updateRefreshToken) {
+              return helper.response(response, 400, {
+                message: 'Failed storing token'
+              })
+            }
+
+            response.cookie('jwt', encryptedCookieContent, {
+              maxAge: maxAgeCookie,
+              expires: maxAgeCookie + Date.now(),
+              httpOnly: true,
+              sameSite: 'strict',
+              secure: NODE_ENV === 'production',
+              signed: true
+            })
+
+            await redisHelper.setCache(
+              `auth:${checkUser?.email}`,
+              'online',
+              JWT_REFRESH_TOKEN_LIFE,
+              response
+            )
+
+            checkUser.token = accessToken
+            checkUser.products.forEach((file) => {
+              file.image = `${request.protocol}://${request.get('host')}/storage/images/${file.image}`
+              file.preview.forEach((file) => {
+                file.imageUrl = `${request.protocol}://${request.get('host')}/storage/images/${file.image}`
+
+                return file
+              })
+
+              return file
+            })
+            checkUser.customers.forEach((file) => {
+              file.customer.image = `${request.protocol}://${request.get('host')}/storage/images/${file.customer.image}`
+
+              return file
+            })
+
+            return helper.response(response, 200, checkUser)
           })
-        }
-
-        if (checkUser?.status !== 'ACTIVE') {
-          return helper.response(response, 400, {
-            message: 'Unverified account'
-          })
-        }
-
-        if (checkUser.refresh_token === getCookieContent?.token?.refreshToken) {
-          return helper.response(response, 400, {
-            message: 'Account is online on another device, please sign out first'
-          })
-        }
-
-        checkUser.image = `${request.protocol}://${request.get('host')}/storage/images/${checkUser?.image}`
-
-        const isRemember = data?.remember
-        let jwtOption = {}
-
-        if (NODE_ENV === 'production') {
-          jwtOption = {
-            algorithm: JWT_ALGORITHM
-          }
-        }
-
-        const dataToSign = {
-          email: checkUser.email
-        }
-        const accessToken = jwt.sign(dataToSign, JWT_SECRET_KEY, {
-          ...jwtOption,
-          expiresIn: JWT_TOKEN_LIFE
-        })
-        const refreshToken = jwt.sign(dataToSign, JWT_REFRESH_SECRET_KEY, {
-          ...jwtOption,
-          expiresIn: JWT_REFRESH_TOKEN_LIFE
-        })
-        const cookieContent = {
-          token: {
-            email: checkUser?.email,
-            remember: isRemember || 'OFF',
-            refreshToken: refreshToken
-          }
-        }
-        const encryptedCookieContent = encrypt(13, cookieContent, response)
-        const maxAgeCookie = new Duration(JWT_REFRESH_TOKEN_LIFE)
-        const updateRefreshToken = await prisma.user.update({
-          where: {
-            email: checkUser?.email
-          },
-          data: {
-            refresh_token: refreshToken
-          },
-          select
-        })
-
-        if (!updateRefreshToken) {
-          return helper.response(response, 400, {
-            message: 'Refresh token invalid, user not found'
-          })
-        }
-
-        response.cookie('jwt', encryptedCookieContent, {
-          maxAge: maxAgeCookie,
-          expires: maxAgeCookie + Date.now(),
-          httpOnly: true,
-          sameSite: 'strict',
-          secure: NODE_ENV === 'production',
-          signed: true
-        })
-
-        checkUser.token = accessToken
-        checkUser.products.forEach((file) => {
-          file.image = `${request.protocol}://${request.get('host')}/storage/images/${file.image}`
-          file.preview.forEach((file) => {
-            file.imageUrl = `${request.protocol}://${request.get('host')}/storage/images/${file.image}`
-
-            return file
-          })
-
-          return file
-        })
-        checkUser.customers.forEach((file) => {
-          file.customer.image = `${request.protocol}://${request.get('host')}/storage/images/${file.customer.image}`
-
-          return file
-        })
-
-        return helper.response(response, 200, checkUser)
       } catch (error) {
         return helper.response(response, 500, {
           message: error.message || error
@@ -290,79 +299,99 @@ module.exports = {
   getRefreshToken: async (request, response) => {
     try {
       const data = request.data
-      const isRemember = data?.remember
-      let jwtOption = {}
+      const get = promisify(redisClient.get).bind(redisClient)
 
-      if (NODE_ENV === 'production') {
-        jwtOption = {
-          algorithm: JWT_ALGORITHM
-        }
-      }
+      get(`auth:${data?.email}`)
+        .then(async (result) => {
+          const cache = JSON.parse(result)
 
-      const getUser = await prisma.user.findFirst({
-        where: {
-          email: data?.user?.email
-        },
-        select
-      })
-
-      if (!getUser) {
-        return helper.response(response, 400, {
-          message: 'User not found'
-        })
-      }
-
-      const dataToSign = {
-        email: getUser.email
-      }
-      const accessToken = jwt.sign(dataToSign, JWT_SECRET_KEY, {
-        ...jwtOption,
-        expiresIn: JWT_TOKEN_LIFE
-      })
-
-      if (isRemember === 'ON') {
-        const refreshToken = jwt.sign(dataToSign, JWT_REFRESH_SECRET_KEY, {
-          ...jwtOption,
-          expiresIn: JWT_REFRESH_TOKEN_LIFE
-        })
-        const cookieContent = {
-          token: {
-            email: data?.user?.email,
-            remember: 'ON',
-            refreshToken: refreshToken
+          if (cache !== 'online') {
+            return helper.response(response, 400, {
+              message: 'Session not found'
+            })
           }
-        }
-        const encryptedCookieContent = encrypt(13, cookieContent, response)
-        const maxAgeCookie = new Duration(JWT_REFRESH_TOKEN_LIFE)
-        const updateRefreshToken = await prisma.user.update({
-          where: {
-            email: data?.user?.email
-          },
-          data: {
-            refresh_token: refreshToken
-          },
-          select
-        })
 
-        if (!updateRefreshToken) {
-          return helper.response(response, 400, {
-            message: 'Refresh token not updated'
+          const isRemember = data?.remember
+          let jwtOption = {}
+
+          if (NODE_ENV === 'production') {
+            jwtOption = {
+              algorithm: JWT_ALGORITHM
+            }
+          }
+
+          const getUser = await prisma.user.findFirst({
+            where: {
+              email: data?.user?.email
+            },
+            select
           })
-        }
 
-        response.cookie('jwt', encryptedCookieContent, {
-          maxAge: maxAgeCookie,
-          expires: maxAgeCookie + Date.now(),
-          httpOnly: true,
-          sameSite: 'strict',
-          secure: NODE_ENV === 'production',
-          signed: true
+          if (!getUser) {
+            return helper.response(response, 400, {
+              message: 'User not found'
+            })
+          }
+
+          const dataToSign = {
+            email: getUser.email
+          }
+          const accessToken = jwt.sign(dataToSign, JWT_SECRET_KEY, {
+            ...jwtOption,
+            expiresIn: JWT_TOKEN_LIFE
+          })
+
+          if (isRemember === 'ON') {
+            const refreshToken = jwt.sign(dataToSign, JWT_REFRESH_SECRET_KEY, {
+              ...jwtOption,
+              expiresIn: JWT_REFRESH_TOKEN_LIFE
+            })
+            const cookieContent = {
+              token: {
+                email: data?.user?.email,
+                remember: 'ON',
+                refreshToken: refreshToken
+              }
+            }
+            const encryptedCookieContent = encrypt(13, cookieContent, response)
+            const maxAgeCookie = new Duration(JWT_REFRESH_TOKEN_LIFE)
+            const updateRefreshToken = await prisma.user.update({
+              where: {
+                email: data?.user?.email
+              },
+              data: {
+                refresh_token: refreshToken
+              },
+              select
+            })
+
+            if (!updateRefreshToken) {
+              return helper.response(response, 400, {
+                message: 'Refresh token not updated'
+              })
+            }
+
+            response.cookie('jwt', encryptedCookieContent, {
+              maxAge: maxAgeCookie,
+              expires: maxAgeCookie + Date.now(),
+              httpOnly: true,
+              sameSite: 'strict',
+              secure: NODE_ENV === 'production',
+              signed: true
+            })
+
+            await redisHelper.setCache(
+              `auth:${updateRefreshToken?.email}`,
+              'online',
+              JWT_REFRESH_TOKEN_LIFE,
+              response
+            )
+          }
+
+          return helper.response(response, 200, {
+            token: accessToken
+          })
         })
-      }
-
-      return helper.response(response, 200, {
-        token: accessToken
-      })
     } catch (error) {
       return helper.response(response, 500, {
         message: error.message || error
@@ -372,10 +401,17 @@ module.exports = {
   getLogout: (request, response) => {
     const main = async () => {
       try {
-        const data = request.data
+        const data = request.data.user
+
+        if (!data) {
+          return helper.response(response, 400, {
+            message: 'Session not found'
+          })
+        }
+
         const deleteRefreshToken = await prisma.user.update({
           where: {
-            email: data?.user?.email
+            email: data?.email
           },
           data: {
             refresh_token: null
@@ -384,15 +420,27 @@ module.exports = {
         })
 
         if (!deleteRefreshToken) {
-          return helper.response(response, 500, {
+          return helper.response(response, 400, {
             message: 'Refresh token is not deleted'
           })
         }
 
-        response.clearCookie('jwt')
+        redisClient.del(`auth:${data?.email}`, async (err, reply) => {
+          if (err) {
+            return helper.response(response, 400, {
+              message: err.message || err
+            })
+          }
 
-        return helper.response(response, 200, {
-          message: 'Successfully log out'
+          if (reply) {
+            if (NODE_ENV === 'development') console.log(`redis cleared by prefix key -> auth:${data?.email}`, Boolean(reply))
+
+            response.clearCookie('jwt')
+
+            return helper.response(response, 200, {
+              message: 'Successfully log out'
+            })
+          }
         })
       } catch (error) {
         return helper.response(response, 500, {

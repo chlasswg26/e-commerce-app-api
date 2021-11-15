@@ -96,7 +96,6 @@ module.exports = {
         })
       }
 
-      const getCookieContent = decrypt(13, getSignedCookie, response)
       const verifyOptions = {
         algorithms: JWT_ALGORITHM
       }
@@ -111,8 +110,7 @@ module.exports = {
         } else {
           const getUser = await prisma.user.findFirst({
             where: {
-              email: decoded?.email,
-              refresh_token: getCookieContent?.token?.refreshToken
+              email: decoded?.email
             },
             select
           })
@@ -124,6 +122,8 @@ module.exports = {
               message: 'Token mismatch, user not found'
             })
           }
+
+          delete getUser.refresh_token
 
           request.data = {
             user: getUser
@@ -150,26 +150,42 @@ module.exports = {
         })
       }
 
-      const getCookieContent = decrypt(13, getSignedCookie, response)
+      const decryptionSignedCookie = decrypt(13, getSignedCookie, response)
       const verifyOptions = {
         algorithms: JWT_ALGORITHM
       }
 
-      if (!getCookieContent?.token?.refreshToken) {
+      if (!decryptionSignedCookie?.token?.refreshToken) {
         return helper.response(response, 400, {
           message: 'Empty refresh token'
         })
       }
 
-      jwt.verify(getCookieContent?.token?.refreshToken, JWT_REFRESH_SECRET_KEY, NODE_ENV === 'production' ? verifyOptions : false, (err, decoded) => {
+      jwt.verify(decryptionSignedCookie?.token?.refreshToken, JWT_REFRESH_SECRET_KEY, NODE_ENV === 'production' ? verifyOptions : false, async (err, decoded) => {
         if (err && err.name) {
           return helper.response(response, 400, {
             message: err.message || err
           })
         } else {
+          const getUser = await prisma.user.findFirst({
+            where: {
+              email: decoded?.email,
+              refresh_token: decryptionSignedCookie?.token?.refreshToken
+            },
+            select
+          })
+
+          if (!getUser) {
+            helper.imageRemover(request)
+
+            return helper.response(response, 400, {
+              message: 'Token mismatch, user not found'
+            })
+          }
+
           request.data = {
             email: decoded?.email,
-            remember: getCookieContent?.token?.remember
+            remember: decryptionSignedCookie?.token?.remember
           }
 
           next()
