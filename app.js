@@ -19,6 +19,8 @@ const fs = require('fs')
 const expressJSDocSwagger = require('express-jsdoc-swagger')
 const swaggerJSON = require('./swagger.json')
 
+console.log('is production?', NODE_ENV === 'production')
+
 if (!fs.existsSync('./public/images')) {
   fs.mkdirSync('./public/images', {
     recursive: true
@@ -42,7 +44,7 @@ expressJSDocSwagger(app)({
   swaggerUiOptions: {}
 }, swaggerJSON)
 
-app.set('trust proxy', 'loopback, linklocal, uniquelocal')
+app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal'])
 app.use(helmet())
 app.use(cookieParser(COOKIE_SECRET_KEY))
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
