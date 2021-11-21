@@ -76,6 +76,23 @@ module.exports = {
           })
         }
 
+        getUser.image = `${request.protocol}://${request.get('host')}/storage/images/${getUser?.image}`
+        getUser.products.forEach((file) => {
+          file.image = `${request.protocol}://${request.get('host')}/storage/images/${file.image}`
+          file.preview.forEach((file) => {
+            file.imageUrl = `${request.protocol}://${request.get('host')}/storage/images/${file.image}`
+
+            return file
+          })
+
+          return file
+        })
+        getUser.customers.forEach((file) => {
+          file.customer.image = `${request.protocol}://${request.get('host')}/storage/images/${file.customer.image}`
+
+          return file
+        })
+
         return helper.response(response, 200, getUser)
       } catch (error) {
         return helper.response(response, 500, {
