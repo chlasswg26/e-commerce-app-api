@@ -322,12 +322,12 @@ module.exports = {
 
           const getUser = await prisma.user.findFirst({
             where: {
-              email: data?.user?.email
+              email: data?.email
             },
             select
           })
 
-          if (!getUser) {
+          if (!getUser || getUser.email !== data?.email) {
             return helper.response(response, 400, {
               message: 'User not found'
             })

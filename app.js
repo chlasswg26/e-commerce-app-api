@@ -19,8 +19,6 @@ const fs = require('fs')
 const expressJSDocSwagger = require('express-jsdoc-swagger')
 const swaggerJSON = require('./swagger.json')
 
-console.log('is production?', NODE_ENV === 'production')
-
 if (!fs.existsSync('./public/images')) {
   fs.mkdirSync('./public/images', {
     recursive: true
