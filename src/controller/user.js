@@ -205,6 +205,7 @@ module.exports = {
 
         if (data.password) {
           const hashedPassword = bcrypt.hashSync(data.password, 18)
+
           data.password = hashedPassword
         }
 
@@ -284,6 +285,7 @@ module.exports = {
 
           if (data.password) {
             const hashedPassword = bcrypt.hashSync(data.password, 18)
+
             data.password = hashedPassword
           }
 

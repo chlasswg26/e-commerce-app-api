@@ -2,12 +2,12 @@
     "openapi": "3.0.0",
     "info": {
         "title": "E-Commerce Backend (RESTful APIs)",
-        "description": "E-Commerce RESTful APIs Postman documentation, see the example to know how to use.\n\n##### **ENDPOINT**\n\n- **LOCAL (DEVELOPMENT)** : ***http://localhost:3000/api/v1***\n- **CLOUD (PRODUCTION)** : ***https://blanja-api.up.railway.app/api/v1***\n\n\n##### **OPTIONAL**\n\n|   Path    | Method | Description |\n| :-------: | :---------: | :--------: |\n|     /:type/:value     | PUT | Type: Parameter type (order by)<br />Value: Parameter value (order value) |\n| /:type/:value | DELETE | Type: Parameter type (order by)<br />Value: Parameter value (order value) |\n\n| Query | Value | Description |\n| :---: | :---: | :---------: |\n|   search   | batman | Keyword data |\n|   limit   | 10 | Limit data |\n|   page   | 1 | Page number |\n| sortBy[OBJECT_KEY] | asc | Sort by object key of variables (Default is ['id'] within value ascending) |",
+        "description": "E-Commerce RESTful APIs Postman documentation, see the example to know how to use.\n\n##### **ENDPOINT**\n\n- **LOCAL (DEVELOPMENT)** : ***http://localhost:3000/api/v1***\n- **CLOUD (PRODUCTION)** : ***https://blanja-api.up.railway.app/api/v1***\n\n\n##### **OPTIONAL**\n\n|   Path    | Method | Description |\n| :-------: | :---------: | :-----------: |\n|     /:type/:value     | PUT | Type: Parameter type (order by)<br />Value: Parameter value (order value) |\n| /:type/:value | DELETE | Type: Parameter type (order by)<br />Value: Parameter value (order value) |\n\n| Query | Value | Description |\n| :---: | :---: | :---------: |\n|   search   | batman | Keyword data |\n|   limit   | 10 | Limit data |\n|   page   | 1 | Page number |\n| sortBy[OBJECT_KEY] | asc | Sort by object key of variables (Default is ['id'] within value ascending) |",
         "version": "1.0.0",
         "contact": {
             "name": "Ichlas Wardy Gustama",
             "email": "ichlaswardy26@gmail.com",
-            "url": ""
+            "url": "https://chlasswg26.github.io/chlasswg26/"
         },
         "license": {
             "name": "MIT",
@@ -16,13 +16,13 @@
     },
     "servers": [
         {
-            "url": "http://localhost:3000/api/v1",
-            "description": "DEVELOPMENT",
-            "variables": {}
+            "url": "https://blanja-api.up.railway.app/api/v1",
+            "variables": {},
+            "description": "PRODUCTION"
         },
         {
-            "url": "https://blanja-api.up.railway.app/api/v1",
-            "description": "PRODUCTION"
+            "url": "http://localhost:3000/api/v1",
+            "description": "DEVELOPMENT"
         }
     ],
     "components": {
@@ -214,6 +214,280 @@
                     }
                 },
                 "parameters": []
+            }
+        },
+        "/account/update": {
+            "put": {
+                "tags": [
+                    "Account"
+                ],
+                "summary": "PUT ACCOUNT",
+                "description": "Put some data to existing account in database",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "image": {
+                                        "type": "string",
+                                        "description": "Image photo profile",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {
+                            "Content-Security-Policy": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                                }
+                            },
+                            "X-DNS-Prefetch-Control": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "off"
+                                }
+                            },
+                            "Expect-CT": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "max-age=0"
+                                }
+                            },
+                            "X-Frame-Options": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "SAMEORIGIN"
+                                }
+                            },
+                            "Strict-Transport-Security": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "max-age=15552000; includeSubDomains"
+                                }
+                            },
+                            "X-Download-Options": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "noopen"
+                                }
+                            },
+                            "X-Content-Type-Options": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "nosniff"
+                                }
+                            },
+                            "X-Permitted-Cross-Domain-Policies": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "none"
+                                }
+                            },
+                            "Referrer-Policy": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "no-referrer"
+                                }
+                            },
+                            "X-XSS-Protection": {
+                                "schema": {
+                                    "type": "integer",
+                                    "example": "0"
+                                }
+                            },
+                            "Access-Control-Allow-Origin": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "*"
+                                }
+                            },
+                            "Content-Type": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "application/json; charset=utf-8"
+                                }
+                            },
+                            "Content-Length": {
+                                "schema": {
+                                    "type": "integer",
+                                    "example": "54"
+                                }
+                            },
+                            "ETag": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "W/\"36-UkzbeH3jpswk32yfp1+Ustjjsr8\""
+                                }
+                            },
+                            "Date": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "Thu, 25 Nov 2021 12:51:11 GMT"
+                                }
+                            },
+                            "Connection": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "keep-alive"
+                                }
+                            },
+                            "Keep-Alive": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "timeout=5"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "status": 200,
+                                    "data": {
+                                        "message": "Account is updated"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "headers": {
+                            "Content-Security-Policy": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                                }
+                            },
+                            "X-DNS-Prefetch-Control": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "off"
+                                }
+                            },
+                            "Expect-CT": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "max-age=0"
+                                }
+                            },
+                            "X-Frame-Options": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "SAMEORIGIN"
+                                }
+                            },
+                            "Strict-Transport-Security": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "max-age=15552000; includeSubDomains"
+                                }
+                            },
+                            "X-Download-Options": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "noopen"
+                                }
+                            },
+                            "X-Content-Type-Options": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "nosniff"
+                                }
+                            },
+                            "X-Permitted-Cross-Domain-Policies": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "none"
+                                }
+                            },
+                            "Referrer-Policy": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "no-referrer"
+                                }
+                            },
+                            "X-XSS-Protection": {
+                                "schema": {
+                                    "type": "integer",
+                                    "example": "0"
+                                }
+                            },
+                            "Access-Control-Allow-Origin": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "*"
+                                }
+                            },
+                            "Content-Type": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "application/json; charset=utf-8"
+                                }
+                            },
+                            "Content-Length": {
+                                "schema": {
+                                    "type": "integer",
+                                    "example": "47"
+                                }
+                            },
+                            "ETag": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "W/\"2f-Yki+hjr3sjocJkrKs5o1m8U7Oco\""
+                                }
+                            },
+                            "Date": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "Thu, 25 Nov 2021 12:53:16 GMT"
+                                }
+                            },
+                            "Connection": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "keep-alive"
+                                }
+                            },
+                            "Keep-Alive": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "timeout=5"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "status": 400,
+                                    "data": {
+                                        "message": "jwt expired"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [],
+                "operationId": ""
             }
         },
         "/auth/register": {
@@ -7768,7 +8042,12 @@
                     "User"
                 ],
                 "summary": "GET USER",
-                "description": "Get all data of user including optionality Query (you can see on top of this documentation)",
+                "description": "Get all data of user including optionality Query (you can see on top of this documentation)\n\n##### **OPTIONAL**\n\n| Query | Value | Description |\n| :---: | :---: | :---------: |\n|   session   | ADMIN | Gain admin access to get all user data |",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -7881,116 +8160,90 @@
                                 "schema": {
                                     "type": "object"
                                 },
-                                "examples": {
-                                    "example-0": {
-                                        "summary": "GET USER - SUCCESS",
-                                        "value": {
-                                            "status": 200,
-                                            "data": [
+                                "example": {
+                                    "status": 200,
+                                    "data": [
+                                        {
+                                            "id": 1,
+                                            "name": "Cahyo Ady",
+                                            "email": "cahyo4713@gmail.com",
+                                            "image": "http://localhost:5000/storage/images/20210914010634175-07a86ba08f83de3db83f568a1d561edc661d.png",
+                                            "phone": null,
+                                            "store": null,
+                                            "balance": 0,
+                                            "role": "ADMIN",
+                                            "status": "ACTIVE",
+                                            "created_at": "2021-09-14T01:07:59.172Z",
+                                            "updated_at": "2021-09-14T01:07:59.173Z",
+                                            "products": [
                                                 {
                                                     "id": 1,
-                                                    "name": "Cahyo Ady",
-                                                    "email": "cahyo4713@gmail.com",
-                                                    "image": "http://localhost:5000/storage/images/20210914010634175-07a86ba08f83de3db83f568a1d561edc661d.png",
-                                                    "phone": null,
-                                                    "store": null,
-                                                    "balance": 0,
-                                                    "role": "ADMIN",
-                                                    "status": "ACTIVE",
-                                                    "created_at": "2021-09-14T01:07:59.172Z",
-                                                    "updated_at": "2021-09-14T01:07:59.173Z",
-                                                    "products": [
+                                                    "name": "Celana Tradisional Model Arab",
+                                                    "description": "Celana yang dilengkapi dengan model khas pakaian tradisional arab",
+                                                    "image": "http://localhost:5000/storage/images/20210915130746831-3ecece5daff56624f6ad147a85613f6836ef.png",
+                                                    "preview": [
                                                         {
-                                                            "id": 1,
-                                                            "name": "Celana Tradisional Model Arab",
-                                                            "description": "Celana yang dilengkapi dengan model khas pakaian tradisional arab",
-                                                            "image": "http://localhost:5000/storage/images/20210915130746831-3ecece5daff56624f6ad147a85613f6836ef.png",
-                                                            "preview": [
-                                                                {
-                                                                    "image": "20210915130746835-ae8d2718b5aef71c03bf4be1fe39d5b7d2f6.png",
-                                                                    "imageUrl": "http://localhost:5000/storage/images/20210915130746835-ae8d2718b5aef71c03bf4be1fe39d5b7d2f6.png"
-                                                                },
-                                                                {
-                                                                    "image": "20210915130746838-a1e2dd1b0ed63bb8bb07694f5eaf940e4c1c.png",
-                                                                    "imageUrl": "http://localhost:5000/storage/images/20210915130746838-a1e2dd1b0ed63bb8bb07694f5eaf940e4c1c.png"
-                                                                },
-                                                                {
-                                                                    "image": "20210915130747158-2ad680a4bdcf5f6a9908540a9f88d825c5b6.png",
-                                                                    "imageUrl": "http://localhost:5000/storage/images/20210915130747158-2ad680a4bdcf5f6a9908540a9f88d825c5b6.png"
-                                                                }
-                                                            ],
-                                                            "status": "ACTIVE",
-                                                            "price": 40000,
-                                                            "discount": 0,
-                                                            "category_id": 1,
-                                                            "created_at": "2021-09-15T13:07:48.496Z",
-                                                            "updated_at": "2021-09-15T13:07:48.501Z",
-                                                            "category": {
-                                                                "id": 1,
-                                                                "name": "Celana",
-                                                                "description": "Celana untuk ukuran dewasa saja"
-                                                            }
-                                                        }
-                                                    ],
-                                                    "customers": [
-                                                        {
-                                                            "id": 1,
-                                                            "customer_id": 1,
-                                                            "product_id": 1,
-                                                            "price": 50000,
-                                                            "quantity": null,
-                                                            "detail": null,
-                                                            "status": "PACKED",
-                                                            "created_at": "2021-09-15T16:51:16.575Z",
-                                                            "updated_at": "2021-09-15T16:57:11.610Z",
-                                                            "customer": {
-                                                                "id": 1,
-                                                                "name": "Cahyo Ady",
-                                                                "image": "http://localhost:5000/storage/images/20210914010634175-07a86ba08f83de3db83f568a1d561edc661d.png"
-                                                            }
+                                                            "image": "20210915130746835-ae8d2718b5aef71c03bf4be1fe39d5b7d2f6.png",
+                                                            "imageUrl": "http://localhost:5000/storage/images/20210915130746835-ae8d2718b5aef71c03bf4be1fe39d5b7d2f6.png"
                                                         },
                                                         {
-                                                            "id": 3,
-                                                            "customer_id": 1,
-                                                            "product_id": 1,
-                                                            "price": 50000,
-                                                            "quantity": 1,
-                                                            "detail": "You're order is created",
-                                                            "status": "PENDING",
-                                                            "created_at": "2021-09-16T15:17:53.843Z",
-                                                            "updated_at": "2021-09-16T15:17:53.846Z",
-                                                            "customer": {
-                                                                "id": 1,
-                                                                "name": "Cahyo Ady",
-                                                                "image": "http://localhost:5000/storage/images/20210914010634175-07a86ba08f83de3db83f568a1d561edc661d.png"
-                                                            }
+                                                            "image": "20210915130746838-a1e2dd1b0ed63bb8bb07694f5eaf940e4c1c.png",
+                                                            "imageUrl": "http://localhost:5000/storage/images/20210915130746838-a1e2dd1b0ed63bb8bb07694f5eaf940e4c1c.png"
+                                                        },
+                                                        {
+                                                            "image": "20210915130747158-2ad680a4bdcf5f6a9908540a9f88d825c5b6.png",
+                                                            "imageUrl": "http://localhost:5000/storage/images/20210915130747158-2ad680a4bdcf5f6a9908540a9f88d825c5b6.png"
                                                         }
-                                                    ]
+                                                    ],
+                                                    "status": "ACTIVE",
+                                                    "price": 40000,
+                                                    "discount": 0,
+                                                    "category_id": 1,
+                                                    "created_at": "2021-09-15T13:07:48.496Z",
+                                                    "updated_at": "2021-09-15T13:07:48.501Z",
+                                                    "category": {
+                                                        "id": 1,
+                                                        "name": "Celana",
+                                                        "description": "Celana untuk ukuran dewasa saja"
+                                                    }
+                                                }
+                                            ],
+                                            "customers": [
+                                                {
+                                                    "id": 1,
+                                                    "customer_id": 1,
+                                                    "product_id": 1,
+                                                    "price": 50000,
+                                                    "quantity": null,
+                                                    "detail": null,
+                                                    "status": "PACKED",
+                                                    "created_at": "2021-09-15T16:51:16.575Z",
+                                                    "updated_at": "2021-09-15T16:57:11.610Z",
+                                                    "customer": {
+                                                        "id": 1,
+                                                        "name": "Cahyo Ady",
+                                                        "image": "http://localhost:5000/storage/images/20210914010634175-07a86ba08f83de3db83f568a1d561edc661d.png"
+                                                    }
+                                                },
+                                                {
+                                                    "id": 3,
+                                                    "customer_id": 1,
+                                                    "product_id": 1,
+                                                    "price": 50000,
+                                                    "quantity": 1,
+                                                    "detail": "You're order is created",
+                                                    "status": "PENDING",
+                                                    "created_at": "2021-09-16T15:17:53.843Z",
+                                                    "updated_at": "2021-09-16T15:17:53.846Z",
+                                                    "customer": {
+                                                        "id": 1,
+                                                        "name": "Cahyo Ady",
+                                                        "image": "http://localhost:5000/storage/images/20210914010634175-07a86ba08f83de3db83f568a1d561edc661d.png"
+                                                    }
                                                 }
                                             ]
                                         }
-                                    },
-                                    "example-1": {
-                                        "summary": "GET USER (IF NOT ADMIN) - SUCCESS",
-                                        "value": {
-                                            "status": 200,
-                                            "data": {
-                                                "id": 1,
-                                                "name": "Cahyo Ady",
-                                                "email": "cahyo4713@gmail.com",
-                                                "image": "http://localhost:3000/storage/images/null",
-                                                "phone": null,
-                                                "store": null,
-                                                "balance": 0,
-                                                "role": "CUSTOMER",
-                                                "status": "ACTIVE",
-                                                "created_at": "2021-11-09T17:55:03.098Z",
-                                                "updated_at": "2021-11-09T17:55:03.107Z",
-                                                "products": [],
-                                                "customers": []
-                                            }
-                                        }
-                                    }
+                                    ]
                                 }
                             }
                         }
@@ -8035,6 +8288,11 @@
                         }
                     }
                 },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -8320,6 +8578,11 @@
                 ],
                 "summary": "GET USER BY ID",
                 "description": "Get user data by ID's",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "parameters": [
                     {
                         "name": "id",
@@ -8705,6 +8968,11 @@
                         }
                     }
                 },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "parameters": [
                     {
                         "name": "id",
@@ -9095,6 +9363,11 @@
                 ],
                 "summary": "DELETE USER",
                 "description": "Delete existing user data",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "parameters": [
                     {
                         "name": "value",
@@ -9481,7 +9754,7 @@
     },
     "externalDocs": {
         "url": "https://documenter.getpostman.com/view/11433882/UUxtDpyx",
-        "description": "Postman Documentation"
+        "description": "Documented on postman"
     },
     "security": []
 }

@@ -80,9 +80,7 @@ module.exports = {
         const data = request.body
         const file = request.files?.image || {}
 
-        if (file.length) {
-          data.image = file[0]?.filename
-        }
+        if (file.length) data.image = file[0]?.filename
 
         const checkUser = await prisma.user.findFirst({
           where: {

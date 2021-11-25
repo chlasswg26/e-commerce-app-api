@@ -2,6 +2,7 @@ const helper = require('../helper')
 require('dotenv').config()
 const { NODE_ENV } = process.env
 const prisma = require('../config/prisma')
+const fs = require('fs')
 const select = {
   id: true,
   name: true,
@@ -95,6 +96,72 @@ module.exports = {
 
         return helper.response(response, 200, getUser)
       } catch (error) {
+        return helper.response(response, 500, {
+          message: error.message || error
+        })
+      }
+    }
+
+    main()
+      .finally(async () => {
+        if (NODE_ENV === 'development') console.log('Account Controller: Ends the Query Engine child process and closes all connections')
+
+        await prisma.$disconnect()
+      })
+  },
+  updateAccount: (request, response) => {
+    const main = async () => {
+      try {
+        const data = request.body
+        const user = request.data.user
+        const file = request.files?.image || {}
+
+        if (!data) {
+          if (file.length) {
+            if (fs.existsSync(`./public/images/${file[0]?.filename}`)) {
+              fs.unlinkSync(`./public/images/${file[0]?.filename}`)
+            }
+          }
+
+          return helper.response(response, 400, {
+            message: 'New data is empty'
+          })
+        }
+
+        if (file.length) data.image = file[0]?.filename
+
+        const updateData = await prisma.user.update({
+          where: {
+            email: user?.email
+          },
+          data: data,
+          select
+        })
+
+        if (!updateData) {
+          if (file.length) {
+            if (fs.existsSync(`./public/images/${file[0]?.filename}`)) {
+              fs.unlinkSync(`./public/images/${file[0]?.filename}`)
+            }
+          }
+
+          return helper.response(response, 400, {
+            message: 'Account is not updated'
+          })
+        }
+
+        return helper.response(response, 200, {
+          message: 'Account is updated'
+        })
+      } catch (error) {
+        const file = request.files?.image || {}
+
+        if (file.length) {
+          if (fs.existsSync(`./public/images/${file[0]?.filename}`)) {
+            fs.unlinkSync(`./public/images/${file[0]?.filename}`)
+          }
+        }
+
         return helper.response(response, 500, {
           message: error.message || error
         })
