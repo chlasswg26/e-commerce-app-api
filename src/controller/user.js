@@ -283,12 +283,6 @@ module.exports = {
             }
           }
 
-          if (data.password) {
-            const hashedPassword = bcrypt.hashSync(data.password, 18)
-
-            data.password = hashedPassword
-          }
-
           return helper.response(response, 400, {
             message: 'User not found'
           })
@@ -300,6 +294,12 @@ module.exports = {
           }
 
           data.image = file[0]?.filename
+        }
+
+        if (data.password) {
+          const hashedPassword = bcrypt.hashSync(data.password, 18)
+
+          data.password = hashedPassword
         }
 
         const putUser = await prisma.user.update({

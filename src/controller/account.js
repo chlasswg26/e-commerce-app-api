@@ -3,6 +3,7 @@ require('dotenv').config()
 const { NODE_ENV } = process.env
 const prisma = require('../config/prisma')
 const fs = require('fs')
+const bcrypt = require('bcrypt')
 const select = {
   id: true,
   name: true,
@@ -115,6 +116,26 @@ module.exports = {
         const data = request.body
         const user = request.data.user
         const file = request.files?.image || {}
+        const checkUser = await prisma.user.findUnique({
+          where: {
+            id: user.id
+          },
+          select: {
+            image: true
+          }
+        })
+
+        if (!checkUser) {
+          if (file.length) {
+            if (fs.existsSync(`./public/images/${file[0]?.filename}`)) {
+              fs.unlinkSync(`./public/images/${file[0]?.filename}`)
+            }
+          }
+
+          return helper.response(response, 400, {
+            message: 'Account not found'
+          })
+        }
 
         if (!data) {
           if (file.length) {
@@ -128,11 +149,23 @@ module.exports = {
           })
         }
 
-        if (file.length) data.image = file[0]?.filename
+        if (file.length) {
+          if (fs.existsSync(`./public/images/${checkUser?.image}`)) {
+            fs.unlinkSync(`./public/images/${checkUser?.image}`)
+          }
+
+          data.image = file[0]?.filename
+        }
+
+        if (data.password) {
+          const hashedPassword = bcrypt.hashSync(data.password, 18)
+
+          data.password = hashedPassword
+        }
 
         const updateData = await prisma.user.update({
           where: {
-            email: user?.email
+            id: user.id
           },
           data: data,
           select
