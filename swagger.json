@@ -16,7 +16,7 @@
     },
     "servers": [
         {
-            "url": "https://blanja-api.up.railway.app/api/v1",
+            "url": "https://api-blanja.herokuapp.com/api/v1",
             "variables": {},
             "description": "PRODUCTION"
         },
